@@ -1,0 +1,20 @@
+{% extends 'base/_base.jinja2' %}
+{% import 'base/macro/common.jinja2' as common_macro %}
+{% import 'blog/macro/post.jinja2' as post_macro %}
+
+{% block main_content %}
+    {{ common_macro.heading('test', 'sub-test') }}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                {% for post in posts %}
+                    {{ post_macro.preview(post) }}
+                {% endfor %}
+
+                {{ post_macro.pagination(posts) }}
+            </div>
+        </div>
+    </div>
+    <hr>
+{% endblock %}

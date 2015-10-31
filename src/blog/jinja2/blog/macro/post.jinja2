@@ -1,0 +1,66 @@
+{% macro preview(post) %}
+    <div class="post-preview">
+        <a href="{{ url('blog:post', kwargs={'slug': post.slug}) }}">
+            <h2 class="post-title">
+                {{ post.title }}
+            </h2>
+            {% if post.subtitle %}
+                <h3 class="post-subtitle">
+                    {{ post.subtitle }}
+                </h3>
+            {% endif %}
+        </a>
+        <p class="post-meta">{{ post.created_at|date() }}</p>
+        <div>{{ post.body|safe }}</div>
+    </div>
+    <hr>
+{% endmacro %}
+
+{% macro article(post) %}
+    <article>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    {{ post.body|safe }}
+                </div>
+            </div>
+        </div>
+    </article>
+{% endmacro %}
+
+{% macro pagination(paginator) %}
+    <ul class="pager">
+        {% if paginator.has_next() %}
+            <li class="next">
+                <a href="{{ url('blog:page', kwargs={'page_number': paginator.next_page_number()}) }}">
+                     {{ _('Предыдущие посты') }} &rarr;
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endmacro %}
+
+{% macro heading(post) %}
+    {% if post.image %}
+        {% set background_image = post.image.url %}
+    {% else %}
+        {% set background_image = static('base/img/default_bg.jpg') %}
+    {% endif %}
+
+    <header class="intro-header" style="background-image: url('{{ background_image }}')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>{{ post.title }}</h1>
+                        {% if post.subtitle %}
+                            <h2 class="subheading">{{ post.subtitle }}</h2>
+                        {% endif %}
+                        <span class="meta">{{ post.created_at|date() }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+{% endmacro %}

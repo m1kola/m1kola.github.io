@@ -1,0 +1,47 @@
+{% import 'base/macro/_base.jinja2' as _base_macro %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {# TODO: replace title, description, author tags #}
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="{% block document_description %}{% endblock %}">
+        <meta name="author" content="{% block document_author %}Mikalai Radchuk{% endblock %}">
+
+        <title>{% block document_title %}{{ settings.SITE_TITLE }}{% endblock %}</title>
+
+        {% block document_css %}
+            <link href="{{ static('base/css/bootstrap.min.css') }}" rel="stylesheet">
+            <link href="{{ static('base/css/blog.min.css') }}" rel="stylesheet">
+            <link href="{{ static('static_pages/css/pages.css') }}" rel="stylesheet">
+            <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+            <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+            <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+            <!--[if lt IE 9]>
+                <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+                <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+            <![endif]-->
+        {% endblock %}
+    </head>
+
+    <body>
+        {% block navigation %}
+            {{ _base_macro.navigation() }}
+        {% endblock %}
+
+        {% block main_content %}{% endblock %}
+
+        {% block footer %}
+            {{ _base_macro.footer() }}
+        {% endblock %}
+
+        {% block document_scripts %}
+            <script src="{{ static('base/js/jquery.min.js') }}"></script>
+            <script src="{{ static('base/js/bootstrap.min.js') }}"></script>
+            <script src="{{ static('base/js/blog.js') }}"></script>
+        {% endblock %}
+    </body>
+
+</html>

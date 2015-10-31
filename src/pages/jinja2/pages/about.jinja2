@@ -1,0 +1,111 @@
+{% extends 'base/_base.jinja2' %}
+
+{% import 'base/macro/common.jinja2' as common_macro %}
+
+{% block main_content %}
+    {% set heading = _('Микола Радчук') %}
+    {% set subheading = _('Инженер-программист') %}
+    {{ common_macro.heading(
+        heading=heading,
+        subheading=subheading
+    ) }}
+
+    <div class="container about">
+        <p>
+            {% trans %}Я инженер-программист, специализирующийся на веб-разработке. На данный момент живу в Минске.
+                С декабря 2013 года основная технология, которую я использую - Python, но я стараюсь не ассациировать
+                свою работу с конкретной технологией в целом: я не <nobr>Python-разработчик</nobr> - я <nobr>веб-разработчик</nobr> :){% endtrans %}
+        </p>
+        <p>
+            {% trans %}До того как я начал программировать на языке Python я использовал PHP.
+                Продолжительный период своей жизни я занимался версткой веб-сайтов и веб-приложений и
+                я люблю вспоминать этот опыт, но заниматься версткой в ближайшее время желания нет.{% endtrans %}
+        </p>
+        <p>
+            {% trans SITE_TITLE=settings.SITE_TITLE %}Кроме разработки, мне интересно направление <abbr title="Development operations">DevOps</abbr>
+                автоматизации: я эксперементирую c Docker, etc.d, conf.d и другими инструментами.
+                Кстати, {{ SITE_TITLE }} запущен на Docker.{% endtrans %}
+        </p>
+
+        <h2>{{ _('Ключевые навыки') }}</h2>
+        <span class="label label-primary">Python</span>
+        <span class="label label-primary">Django</span>
+        <span class="label label-primary">Flask</span>
+        <span class="label label-primary">Design Patterns</span>
+        <span class="label label-primary">Docker</span>
+        <span class="label label-default">PHP</span>
+        <span class="label label-default">Symfony</span>
+
+        <div class="print-page-break"></div>
+
+        <h2>
+            {{ _('Опыт работы') }}
+            <small>{{ career_started_at|timesince() }}</small>
+        </h2>
+
+        {% for job_position in job_positions %}
+            <div class="row">
+                <div class="col-md-2">
+                    {{ job_position.start_at|date('F Y') }} —
+                    {% if job_position.leave_at == now().date() %}
+                        {{ _('по настоящее время') }}
+                    {% else %}
+                        {{ job_position.leave_at|date('F Y') }}
+                    {% endif %}
+                    <br>
+                    <small>
+                        {{ job_position.start_at|timesince(job_position.leave_at) }}
+                    </small>
+                </div>
+                <div class="col-md-10">
+                    <strong>{{ job_position.company_name }}</strong>
+                    <br>
+                    {% if job_position.location or job_position.website %}
+                        {% if job_position.location %}{{ job_position.location }}{% endif %}
+                        {%- if job_position.website -%}
+                            , <a href="http://{{ job_position.website }}">{{ job_position.website }}</a>
+                        {% endif %}
+                        <br>
+                    {% endif %}
+                    <br>
+
+                    <strong>{{ job_position.position }}</strong>
+                    <br>
+                    {{ _('Обязанности') }}:
+                    <ul>
+                        {% for responsibility in job_position.responsibilities %}
+                            <li>{{ responsibility }}</li>
+                        {% endfor %}
+                    </ul>
+
+                    {{ _('Достижения') }}:
+                    <ul>
+                        {% for achievement in job_position.achievements %}
+                            <li>{{ achievement }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endfor %}
+
+        <h2>
+            {{ _('Образование') }}
+        </h2>
+        <p>
+            <strong>{{ _('Высшее образование') }}</strong><br>
+            {{ _('Белорусский государственный университет информатики и радиоэлектроники') }}
+            <br>
+            {{ _('Инженер-программист, Бакалавр') }}
+            <br>
+            2009 - 2015
+        </p>
+
+        <strong>{{ _('Языки') }}</strong>
+        <ul>
+            <li>{{ _('Русский - родной') }}</li>
+            <li>{{ _('Английский') }}</li>
+        </ul>
+    </div>
+
+    <hr>
+{% endblock %}
