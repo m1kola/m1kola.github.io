@@ -125,6 +125,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT', os.path.join(BASE_DIR, 'media'))
 
 # Site constants
+
 SITE_TITLE = 'mikola.by'
 SOCIAL_MEDIA_URLS = {
     'github': 'https://github.com/m1kola',
@@ -138,3 +139,5 @@ FOOTER_COPYRIGHT = 'Copyright &copy; %(title)s %(years)s' % {
         '%s' % COPYRIGHT_YEAR if COPYRIGHT_YEAR == datetime.now().year
         else '%s - %s' % (COPYRIGHT_YEAR, datetime.now().year),
 }
+
+CV_MODE = True

@@ -15,8 +15,20 @@ urlpatterns = [
 
 urlpatterns += i18n_patterns(
     url(r'^', include(pages_urls, 'pages')),
-    url(r'^', include(blog_urls, 'blog')),
 )
+
+if settings.CV_MODE:
+    from django.views.generic.base import RedirectView
+
+    urlpatterns += i18n_patterns(
+        url(r'^', include([
+            url(r'^$', RedirectView.as_view(pattern_name='pages:about', permanent=False), name='index')
+        ], 'blog')),
+    )
+else:
+    urlpatterns += i18n_patterns(
+        url(r'^', include(blog_urls, 'blog')),
+    )
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + \
                static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

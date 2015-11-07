@@ -3,7 +3,7 @@ import datetime
 
 from django.conf import settings
 from django.contrib.staticfiles.storage import staticfiles_storage
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.template import defaultfilters
 from django.utils import translation
 
@@ -19,6 +19,7 @@ def environment(**options):
             'SITE_TITLE': settings.SITE_TITLE,
             'SOCIAL_MEDIA_URLS': settings.SOCIAL_MEDIA_URLS,
             'FOOTER_COPYRIGHT': settings.FOOTER_COPYRIGHT,
+            'CV_MODE': settings.CV_MODE,
         },
         'now': datetime.datetime.now,
     })
