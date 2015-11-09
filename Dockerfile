@@ -2,7 +2,7 @@ FROM python:2.7-slim
 
 RUN apt-get update && apt-get install -y \
 		postgresql-client libpq-dev \
-		gcc \
+		gcc gettext \
 	--no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 ENV APP_ROOT=/app \
@@ -12,7 +12,8 @@ ADD src/ $APP_ROOT
 WORKDIR $APP_ROOT
 VOLUME $APP_VAR_ROOT
 
-RUN pip install -r requirements/requirements.txt
+RUN pip install -r requirements/requirements.txt && \
+    python manage.py compilemessages -v 3
 
 CMD uwsgi --chdir=$APP_ROOT \
           --module=base.wsgi \
