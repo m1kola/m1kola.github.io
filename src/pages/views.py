@@ -30,7 +30,7 @@ class AboutView(TemplateView):
                 ],
                 achievements=[
                     _(u'Опыт координирования работ между несколькими проектами.'),
-                    _(u'Опыт наставничества разработчиков, которые переключается с PHP.'),
+                    _(u'Опыт наставничества разработчиков, которые переключаются с PHP.'),
                     _(u'Опыт публичного выступления на Wargaming Developers Conference 2014 (WG DevCon).'),
                 ]
             ),
@@ -48,7 +48,7 @@ class AboutView(TemplateView):
                     _(u'Опыт работы с языком Python и Python-фреймворками (Django, Flask, Falcon, Twisted).'),
                     _(u'Опыт работы с мультиязычным проектом (worldoftanks.eu, worldoftanks.ru, worldoftanks.com, '
                       u'worldoftanks.kr, worldoftanks.asia, scw.worldoftanks.cn and ncw.worldoftanks.cn).'),
-                    _(u'Опыт работы с системами мониторинг (Newrelic, Sentry, Zabbix).'),
+                    _(u'Опыт работы с системами мониторинга (Newrelic, Sentry, Zabbix).'),
                     _(u'Опыт работы с Fabric (fabfile.org).'),
                     _(u'Рекорд в книге рекордов Гиннеса: самый большой MMO турнир.'),
                 ]
