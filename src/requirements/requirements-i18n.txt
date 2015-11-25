@@ -1,3 +1,0 @@
--r requirements.txt
-
-Babel==2.1.1

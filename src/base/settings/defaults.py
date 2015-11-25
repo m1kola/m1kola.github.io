@@ -28,6 +28,22 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'wagtail.wagtailforms',
+    'wagtail.wagtailredirects',
+    'wagtail.wagtailembeds',
+    'wagtail.wagtailsites',
+    'wagtail.wagtailusers',
+    'wagtail.wagtailsnippets',
+    'wagtail.wagtaildocs',
+    'wagtail.wagtailimages',
+    'wagtail.wagtailsearch',
+    'wagtail.wagtailadmin',
+    'wagtail.wagtailcore',
+
+    'modelcluster',
+    'compressor',
+    'taggit',
+
     'base',
     'pages',
     'blog',
@@ -43,6 +59,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.locale.LocaleMiddleware',
+
+    'wagtail.wagtailcore.middleware.SiteMiddleware',
+    'wagtail.wagtailredirects.middleware.RedirectMiddleware',
 )
 
 ROOT_URLCONF = 'base.urls'
@@ -54,7 +73,12 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'environment': 'base.jinja2_env.environment',
-            'extensions': ['jinja2.ext.i18n']
+            'extensions': [
+                'jinja2.ext.i18n',
+                'wagtail.wagtailcore.templatetags.jinja2.core',
+                'wagtail.wagtailadmin.templatetags.jinja2.userbar',
+                'wagtail.wagtailimages.templatetags.jinja2.images',
+            ]
         },
     },
     {
@@ -69,7 +93,8 @@ TEMPLATES = [
                 'django.template.context_processors.media',
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
-                'django.contrib.messages.context_processors.messages'
+                'django.template.context_processors.request',
+                'django.contrib.messages.context_processors.messages',
             ),
         },
     },
@@ -127,6 +152,12 @@ STATICFILES_DIRS = (
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT', os.path.join(BASE_DIR, 'media'))
+
+
+# Wagtail
+
+WAGTAIL_SITE_NAME = 'mikola.by'
+
 
 # Site constants
 
