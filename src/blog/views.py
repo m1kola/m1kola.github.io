@@ -1,4 +1,4 @@
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.core.paginator import Paginator, EmptyPage
 from django.http import Http404
 from django.utils.translation import get_language
 from django.views.generic import TemplateView

@@ -83,4 +83,3 @@ class Post(models.Model):
 
     class Meta(object):
         unique_together = ('post_meta', 'language_code')
-

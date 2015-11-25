@@ -3,7 +3,7 @@ import datetime
 
 from django.conf import settings
 from django.contrib.staticfiles.storage import staticfiles_storage
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.core.urlresolvers import reverse
 from django.template import defaultfilters
 from django.utils import translation
 
