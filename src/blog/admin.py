@@ -1,28 +1,36 @@
-from django.contrib import admin
+from wagtail.wagtailadmin.edit_handlers import FieldPanel, StreamFieldPanel
+from wagtail.wagtailcore.models import Page
+from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
 
-from blog.models import PostMeta, Post, TagMeta, Tag
-
-
-class TagMetaAdmin(admin.ModelAdmin):
-    list_display = ('slug', )
+from blog.models import BlogPage, BlogIndexPage
 
 
-class TagAdmin(admin.ModelAdmin):
-    search_fields = ('title', )
-    list_display = ('title', 'slug')
+# BlogPage
+
+BlogPage.content_panels = Page.content_panels + [
+    FieldPanel('subtitle', classname='full'),
+    ImageChooserPanel('main_image'),
+    FieldPanel('lead', classname='full'),
+    StreamFieldPanel('body'),
+]
+
+BlogPage.promote_panels = Page.promote_panels + [
+    FieldPanel('tags'),
+]
+
+BlogPage.parent_page_types = [
+    BlogIndexPage,
+]
+BlogPage.subpage_types = []
 
 
-class PostMetaAdmin(admin.ModelAdmin):
-    list_display = ('slug', )
+# BlogIndexPage
 
+BlogIndexPage.content_panels = Page.content_panels + [
+    FieldPanel('subtitle', classname='full'),
+    ImageChooserPanel('main_image'),
+]
 
-class PostAdmin(admin.ModelAdmin):
-    search_fields = ('title', )
-    list_display = ('title', 'slug')
-
-
-admin.site.register(TagMeta, TagMetaAdmin)
-admin.site.register(Tag, TagAdmin)
-
-admin.site.register(PostMeta, PostMetaAdmin)
-admin.site.register(Post, PostAdmin)
+BlogIndexPage.subpage_types = [
+    BlogPage,
+]

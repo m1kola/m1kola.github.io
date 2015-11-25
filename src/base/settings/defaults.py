@@ -15,7 +15,9 @@ SECRET_KEY = 'q5s1-!t2yqz2j0go6zt39^2gjmf*d$e%#4e5g#69*!=xma*vgm'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+]
 
 
 # Application definition
@@ -51,6 +53,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -58,7 +61,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
 
     'wagtail.wagtailcore.middleware.SiteMiddleware',
     'wagtail.wagtailredirects.middleware.RedirectMiddleware',
@@ -162,11 +164,13 @@ WAGTAIL_SITE_NAME = 'mikola.by'
 # Site constants
 
 SITE_TITLE = 'mikola.by'
+
 SOCIAL_MEDIA_URLS = {
     'github': 'https://github.com/m1kola',
     'facebook': 'https://www.facebook.com/m1kola',
     'linkedin': 'https://www.linkedin.com/in/m1kola'
 }
+
 COPYRIGHT_YEAR = 2015
 FOOTER_COPYRIGHT = 'Copyright &copy; %(title)s %(years)s' % {
     'title': SITE_TITLE,
@@ -175,4 +179,4 @@ FOOTER_COPYRIGHT = 'Copyright &copy; %(title)s %(years)s' % {
         else '%s - %s' % (COPYRIGHT_YEAR, datetime.now().year),
 }
 
-CV_MODE = True
+INDEX_ROUTE_NAME = 'wagtail_serve'

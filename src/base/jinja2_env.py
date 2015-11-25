@@ -17,9 +17,9 @@ def environment(**options):
         'url': reverse,
         'settings': {
             'SITE_TITLE': settings.SITE_TITLE,
+            'INDEX_ROUTE_NAME': settings.INDEX_ROUTE_NAME,
             'SOCIAL_MEDIA_URLS': settings.SOCIAL_MEDIA_URLS,
             'FOOTER_COPYRIGHT': settings.FOOTER_COPYRIGHT,
-            'CV_MODE': settings.CV_MODE,
         },
         'now': datetime.datetime.now,
     })

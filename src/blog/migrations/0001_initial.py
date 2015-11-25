@@ -2,69 +2,65 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
-import django.core.validators
+import wagtail.wagtailcore.fields
+import modelcluster.contrib.taggit
+import wagtail.wagtaildocs.blocks
+import django.db.models.deletion
+import wagtail.wagtailcore.blocks
+import modelcluster.fields
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
+        ('wagtailimages', '0008_image_created_at_index'),
+        ('taggit', '0002_auto_20150616_2121'),
+        ('wagtailcore', '0020_add_index_on_page_first_published_at'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Post',
+            name='BlogIndexPage',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('language_code', models.CharField(max_length=7, choices=[(b'en', b'English'), (b'ru', b'Russian')])),
-                ('title', models.CharField(max_length=256)),
+                ('page_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='wagtailcore.Page')),
                 ('subtitle', models.CharField(max_length=256, blank=True)),
-                ('body', models.TextField()),
+                ('main_image', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.SET_NULL, blank=True, to='wagtailimages.Image', null=True)),
+            ],
+            options={
+                'abstract': False,
+            },
+            bases=('wagtailcore.page',),
+        ),
+        migrations.CreateModel(
+            name='BlogPage',
+            fields=[
+                ('page_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='wagtailcore.Page')),
+                ('subtitle', models.CharField(max_length=256, blank=True)),
+                ('body', wagtail.wagtailcore.fields.StreamField([(b'rich_text', wagtail.wagtailcore.blocks.RichTextBlock(icon=b'edit')), (b'document', wagtail.wagtaildocs.blocks.DocumentChooserBlock(icon=b'doc-full-inverse')), (b'code', wagtail.wagtailcore.blocks.StructBlock([(b'language', wagtail.wagtailcore.blocks.ChoiceBlock(required=False, choices=[(b'python', b'Python'), (b'php', b'PHP'), (b'bash', b'Bash/Shell'), (b'html', b'HTML'), (b'js', b'JavaScript'), (b'css', b'CSS'), (b'scss', b'SCSS')])), (b'code', wagtail.wagtailcore.blocks.TextBlock())])), (b'html', wagtail.wagtailcore.blocks.RawHTMLBlock())])),
+                ('lead', wagtail.wagtailcore.fields.RichTextField(blank=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
+                ('main_image', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.SET_NULL, blank=True, to='wagtailimages.Image', null=True)),
             ],
+            options={
+                'abstract': False,
+            },
+            bases=('wagtailcore.page',),
         ),
         migrations.CreateModel(
-            name='PostMeta',
-            fields=[
-                ('slug', models.CharField(max_length=64, unique=True, serialize=False, primary_key=True, validators=[django.core.validators.RegexValidator(b'^[a-z0-9-]+$')])),
-                ('image', models.ImageField(upload_to=b'blog/images/%Y/%m/%d', blank=True)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Tag',
+            name='BlogPageTag',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('language_code', models.CharField(max_length=7, choices=[(b'en', b'English'), (b'ru', b'Russian')])),
-                ('title', models.CharField(max_length=256)),
+                ('content_object', modelcluster.fields.ParentalKey(related_name='tagged_items', to='blog.BlogPage')),
+                ('tag', models.ForeignKey(related_name='blog_blogpagetag_items', to='taggit.Tag')),
             ],
-        ),
-        migrations.CreateModel(
-            name='TagMeta',
-            fields=[
-                ('slug', models.CharField(max_length=64, unique=True, serialize=False, primary_key=True, validators=[django.core.validators.RegexValidator(b'^[a-z-]+$')])),
-            ],
+            options={
+                'abstract': False,
+            },
         ),
         migrations.AddField(
-            model_name='tag',
-            name='tag_meta',
-            field=models.ForeignKey(related_name='tags_set', to='blog.TagMeta'),
-        ),
-        migrations.AddField(
-            model_name='postmeta',
+            model_name='blogpage',
             name='tags',
-            field=models.ManyToManyField(related_name='tagsmetas_set', to='blog.TagMeta', blank=True),
-        ),
-        migrations.AddField(
-            model_name='post',
-            name='post_meta',
-            field=models.ForeignKey(related_name='posts_set', to='blog.PostMeta'),
-        ),
-        migrations.AlterUniqueTogether(
-            name='tag',
-            unique_together=set([('tag_meta', 'language_code')]),
-        ),
-        migrations.AlterUniqueTogether(
-            name='post',
-            unique_together=set([('post_meta', 'language_code')]),
+            field=modelcluster.contrib.taggit.ClusterTaggableManager(to='taggit.Tag', through='blog.BlogPageTag', blank=True, help_text='A comma-separated list of tags.', verbose_name='Tags'),
         ),
     ]

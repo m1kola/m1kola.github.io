@@ -9,6 +9,8 @@ from pages.models import JobPosition
 
 
 class AboutView(TemplateView):
+    template_name = 'pages/about.html'
+
     def get_context_data(self, **kwargs):
         context = super(AboutView, self).get_context_data(**kwargs)
 

@@ -1,6 +1,6 @@
 {% macro preview(post) %}
     <div class="post-preview">
-        <a href="{{ url('blog:post', kwargs={'slug': post.slug}) }}">
+        <a href="{{ post.url }}">
             <h2 class="post-title">
                 {{ post.title }}
             </h2>
@@ -11,7 +11,7 @@
             {% endif %}
         </a>
         <p class="post-meta">{{ post.created_at|date() }}</p>
-        <div>{{ post.body|safe }}</div>
+        <div>{{ post.lead|richtext() }}</div>
     </div>
     <hr>
 {% endmacro %}
@@ -21,7 +21,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    {{ post.body|safe }}
+                    {{ post.body }}
                 </div>
             </div>
         </div>
@@ -32,7 +32,7 @@
     <ul class="pager">
         {% if paginator.has_next() %}
             <li class="next">
-                <a href="{{ url('blog:page', kwargs={'page_number': paginator.next_page_number()}) }}">
+                <a href="?page={{ paginator.next_page_number() }}">
                      {{ _('Предыдущие посты') }} &rarr;
                 </a>
             </li>
@@ -42,8 +42,8 @@
 {% endmacro %}
 
 {% macro heading(post) %}
-    {% if post.image %}
-        {% set background_image = post.image.url %}
+    {% if post.main_image %}
+        {% set background_image = post.main_image.file.url %}
     {% else %}
         {% set background_image = static('base/img/default_bg.jpg') %}
     {% endif %}
@@ -57,7 +57,7 @@
                         {% if post.subtitle %}
                             <h2 class="subheading">{{ post.subtitle }}</h2>
                         {% endif %}
-                        <span class="meta">{{ post.created_at|date() }}</span>
+{#                        <span class="meta">{{ post.created_at|date() }}</span>#}
                     </div>
                 </div>
             </div>

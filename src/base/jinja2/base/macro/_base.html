@@ -34,22 +34,20 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="{{ url('blog:index') }}">{{ settings.SITE_TITLE }}</a>
+                <a class="navbar-brand" href="{{ url(settings.INDEX_ROUTE_NAME, args=('', )) }}">{{ settings.SITE_TITLE }}</a>
             </div>
 
-            {% if not settings.CV_MODE %}
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a href="{{ url('blog:index') }}">{{ _('Главная') }}</a>
-                        </li>
-                        <li>
-                            <a href="{{ url('pages:about') }}">{{ _('Обо мне') }}</a>
-                        </li>
-                    </ul>
-                </div>
-                <!-- /.navbar-collapse -->
-            {% endif %}
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="{{ url(settings.INDEX_ROUTE_NAME, args=('', )) }}">{{ _('Главная') }}</a>
+                    </li>
+                    <li>
+                        <a href="{{ url('pages:about') }}">{{ _('Обо мне') }}</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
         </div>
         <!-- /.container -->
     </nav>

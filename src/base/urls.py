@@ -13,32 +13,17 @@ from blog import urls as blog_urls
 
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^django-admin/', include(admin.site.urls)),
+    url(r'^cms/', include(wagtailadmin_urls)),
+    url(r'^documents/', include(wagtaildocs_urls)),
     # url(r'^i18n/', include('django.conf.urls.i18n')),
 ]
 
 urlpatterns += i18n_patterns(
     url(r'^', include(pages_urls, 'pages')),
+    url(r'^', include(blog_urls, 'blog')),
+    url(r'^', include(wagtail_urls)),
 )
-
-if settings.CV_MODE:
-    from django.views.generic.base import RedirectView
-
-    urlpatterns += i18n_patterns(
-        url(r'^', include([
-            url(r'^$', RedirectView.as_view(pattern_name='pages:about', permanent=False), name='index')
-        ], 'blog')),
-    )
-else:
-    urlpatterns += i18n_patterns(
-        url(r'^', include(blog_urls, 'blog')),
-    )
-
-urlpatterns += [
-    url(r'^cms/', include(wagtailadmin_urls)),
-    url(r'^documents/', include(wagtaildocs_urls)),
-    url(r'^pages/', include(wagtail_urls)),
-]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

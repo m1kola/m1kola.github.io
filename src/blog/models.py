@@ -1,85 +1,73 @@
-from django.conf import settings as global_settings
-from django.core.validators import RegexValidator
+# -*- coding: utf-8 -*-
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db import models
-from django.utils.functional import cached_property
+from modelcluster.contrib import taggit
+from modelcluster.fields import ParentalKey
+from taggit.models import TaggedItemBase
+from wagtail.wagtailcore import fields as wt_fields
+from wagtail.wagtailcore.models import Page
 
-from . import settings
-
-
-class TagMeta(models.Model):
-    slug = models.CharField(primary_key=True,
-                            max_length=64,
-                            unique=True,
-                            validators=[
-                                RegexValidator(
-                                    r'^%s$' % settings.TAG_SLUG_REGEX,
-                                )
-                            ])
-
-    def __unicode__(self):
-        return self.slug
+from .blocks import BlogStreamBlock
+from . import settings as app_settings
 
 
-class Tag(models.Model):
-    tag_meta = models.ForeignKey(TagMeta, related_name='tags_set')
-    language_code = models.CharField(max_length=7, choices=global_settings.LANGUAGES)
-    title = models.CharField(max_length=256)
-
-    @cached_property
-    def slug(self):
-        return self.tag_meta.slug
-
-    def __unicode__(self):
-        return self.title
-
-    class Meta(object):
-        unique_together = ('tag_meta', 'language_code')
+class BlogPageTag(TaggedItemBase):
+    content_object = ParentalKey('BlogPage', related_name='tagged_items')
 
 
-class PostMeta(models.Model):
-    slug = models.CharField(primary_key=True,
-                            max_length=64,
-                            unique=True,
-                            validators=[
-                                RegexValidator(
-                                    r'^%s$' % settings.POST_SLUG_REGEX,
-                                )
-                            ])
-
-    image = models.ImageField(upload_to='blog/images/%Y/%m/%d', blank=True)
-    tags = models.ManyToManyField(TagMeta, related_name='tagsmetas_set', blank=True)
-
-    def __unicode__(self):
-        return self.slug
-
-
-class Post(models.Model):
-    post_meta = models.ForeignKey(PostMeta, related_name='posts_set')
-    language_code = models.CharField(max_length=7, choices=global_settings.LANGUAGES)
-
-    title = models.CharField(max_length=256)
+class BlogPage(Page):
     subtitle = models.CharField(max_length=256, blank=True)
-    body = models.TextField()
+    body = wt_fields.StreamField(BlogStreamBlock())
+    lead = wt_fields.RichTextField(blank=True)
+    tags = taggit.ClusterTaggableManager(through=BlogPageTag, blank=True)
+    main_image = models.ForeignKey(
+        'wagtailimages.Image',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    @cached_property
-    def slug(self):
-        return self.post_meta.slug
-    slug.admin_order_field = 'post__slug'
 
-    @cached_property
-    def image(self):
-        return self.post_meta.image
+class BlogIndexPage(Page):
+    subtitle = models.CharField(max_length=256, blank=True)
+    main_image = models.ForeignKey(
+        'wagtailimages.Image',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
 
-    @cached_property
-    def tags(self):
-        # TODO: Review needed
-        return self.post_meta.tags
+    @property
+    def blog_pages(self):
+        # Get list of live blog pages that are descendants of this page
+        blogs = BlogPage.objects.live().descendant_of(self)
 
-    def __unicode__(self):
-        return self.title
+        # Order by most recent date first
+        blogs = blogs.order_by('-created_at')
 
-    class Meta(object):
-        unique_together = ('post_meta', 'language_code')
+        return blogs
+
+    def get_context(self, request, *args, **kwargs):
+        blog_pages = self.blog_pages
+
+        tag = request.GET.get('tag')
+        if tag:
+            blog_pages = blog_pages.filter(tags__name=tag)
+
+        page = request.GET.get('page')
+        paginator = Paginator(blog_pages, app_settings.POSTS_PAGE_SIZE)
+        try:
+            blogs = paginator.page(page)
+        except PageNotAnInteger:
+            blogs = paginator.page(1)
+        except EmptyPage:
+            blogs = paginator.page(paginator.num_pages)
+
+        context = super(BlogIndexPage, self).get_context(request)
+        context['posts'] = blogs
+        return context

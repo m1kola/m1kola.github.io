@@ -1,9 +1,0 @@
-{% extends 'base/_base.jinja2' %}
-{% import 'blog/macro/post.jinja2' as post_macro %}
-
-{% block main_content %}
-    {{ post_macro.heading(post) }}
-    {{ post_macro.article(post) }}
-
-    <hr>
-{% endblock %}
