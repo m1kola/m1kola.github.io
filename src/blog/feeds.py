@@ -15,7 +15,7 @@ class BlogFeed(Feed):
     # description = 'The latest news and views from Torchbox on the work we do, the web and the wider world'
 
     def items(self):
-        return BlogPage.objects.live().order_by('-created_at')[:app_settings.POSTS_PAGE_SIZE]
+        return BlogPage.objects.live().order_by('-first_published_at')[:app_settings.POSTS_PAGE_SIZE]
 
     def item_title(self, item):
         return item.title
@@ -30,4 +30,4 @@ class BlogFeed(Feed):
         pass
 
     def item_pubdate(self, item):
-        return datetime.combine(item.created_at, time())
+        return datetime.combine(item.first_published_at, time())

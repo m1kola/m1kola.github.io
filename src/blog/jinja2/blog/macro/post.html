@@ -10,7 +10,7 @@
                 </h3>
             {% endif %}
         </a>
-        <p class="post-meta">{{ post.created_at|date() }}</p>
+        <p class="post-meta">{{ post.first_published_at|date() }}</p>
         <div>{{ post.lead|richtext() }}</div>
     </div>
     <hr>
@@ -21,7 +21,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    {{ post.body }}
+                    {{ post.body|richtext }}
                 </div>
             </div>
         </div>
@@ -57,7 +57,7 @@
                         {% if post.subtitle %}
                             <h2 class="subheading">{{ post.subtitle }}</h2>
                         {% endif %}
-{#                        <span class="meta">{{ post.created_at|date() }}</span>#}
+{#                        <span class="meta">{{ post.first_published_at|date() }}</span>#}
                     </div>
                 </div>
             </div>

@@ -7,7 +7,6 @@ from taggit.models import TaggedItemBase
 from wagtail.wagtailcore import fields as wt_fields
 from wagtail.wagtailcore.models import Page
 
-from .blocks import BlogStreamBlock
 from . import settings as app_settings
 
 
@@ -17,7 +16,7 @@ class BlogPageTag(TaggedItemBase):
 
 class BlogPage(Page):
     subtitle = models.CharField(max_length=256, blank=True)
-    body = wt_fields.StreamField(BlogStreamBlock())
+    body = wt_fields.RichTextField()
     lead = wt_fields.RichTextField(blank=True)
     tags = taggit.ClusterTaggableManager(through=BlogPageTag, blank=True)
     main_image = models.ForeignKey(
@@ -27,9 +26,6 @@ class BlogPage(Page):
         on_delete=models.SET_NULL,
         related_name='+'
     )
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
 
 class BlogIndexPage(Page):
@@ -48,7 +44,7 @@ class BlogIndexPage(Page):
         blogs = BlogPage.objects.live().descendant_of(self)
 
         # Order by most recent date first
-        blogs = blogs.order_by('-created_at')
+        blogs = blogs.order_by('-first_published_at')
 
         return blogs
 

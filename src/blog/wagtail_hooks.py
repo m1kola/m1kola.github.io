@@ -1,4 +1,4 @@
-from wagtail.wagtailadmin.edit_handlers import FieldPanel, StreamFieldPanel
+from wagtail.wagtailadmin.edit_handlers import FieldPanel
 from wagtail.wagtailcore.models import Page
 from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
 
@@ -11,7 +11,7 @@ BlogPage.content_panels = Page.content_panels + [
     FieldPanel('subtitle', classname='full'),
     ImageChooserPanel('main_image'),
     FieldPanel('lead', classname='full'),
-    StreamFieldPanel('body'),
+    FieldPanel('body', classname='full'),
 ]
 
 BlogPage.promote_panels = Page.promote_panels + [

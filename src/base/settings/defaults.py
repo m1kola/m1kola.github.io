@@ -17,13 +17,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
+    'mikola.by',
 ]
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -42,9 +42,9 @@ INSTALLED_APPS = [
     'wagtail.wagtailadmin',
     'wagtail.wagtailcore',
 
-    'modelcluster',
     'compressor',
     'taggit',
+    'modelcluster',
 
     'base',
     'pages',
@@ -52,14 +52,14 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE_CLASSES = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.middleware.security.SecurityMiddleware',
 
     'wagtail.wagtailcore.middleware.SiteMiddleware',
@@ -77,9 +77,9 @@ TEMPLATES = [
             'environment': 'base.jinja2_env.environment',
             'extensions': [
                 'jinja2.ext.i18n',
-                'wagtail.wagtailcore.templatetags.jinja2.core',
-                'wagtail.wagtailadmin.templatetags.jinja2.userbar',
-                'wagtail.wagtailimages.templatetags.jinja2.images',
+                'wagtail.wagtailcore.jinja2tags.core',
+                'wagtail.wagtailadmin.jinja2tags.userbar',
+                'wagtail.wagtailimages.jinja2tags.images',
             ]
         },
     },
@@ -159,6 +159,7 @@ MEDIA_ROOT = os.environ.get('MEDIA_ROOT', os.path.join(BASE_DIR, 'media'))
 # Wagtail
 
 WAGTAIL_SITE_NAME = 'mikola.by'
+TAGGIT_CASE_INSENSITIVE = True
 
 
 # Site constants
