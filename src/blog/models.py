@@ -16,8 +16,8 @@ class BlogPageTag(TaggedItemBase):
 
 class BlogPage(Page):
     subtitle = models.CharField(max_length=256, blank=True)
-    body = wt_fields.RichTextField()
     lead = wt_fields.RichTextField(blank=True)
+    body = wt_fields.RichTextField()
     tags = taggit.ClusterTaggableManager(through=BlogPageTag, blank=True)
     main_image = models.ForeignKey(
         'wagtailimages.Image',

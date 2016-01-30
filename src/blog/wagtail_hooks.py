@@ -1,6 +1,6 @@
-from wagtail.wagtailadmin.edit_handlers import FieldPanel
+from wagtail.wagtailadmin import edit_handlers
 from wagtail.wagtailcore.models import Page
-from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
+from wagtail.wagtailimages import edit_handlers as image_edit_handlers
 
 from blog.models import BlogPage, BlogIndexPage
 
@@ -8,14 +8,14 @@ from blog.models import BlogPage, BlogIndexPage
 # BlogPage
 
 BlogPage.content_panels = Page.content_panels + [
-    FieldPanel('subtitle', classname='full'),
-    ImageChooserPanel('main_image'),
-    FieldPanel('lead', classname='full'),
-    FieldPanel('body', classname='full'),
+    edit_handlers.FieldPanel('subtitle', classname='full'),
+    image_edit_handlers.ImageChooserPanel('main_image'),
+    edit_handlers.FieldPanel('lead', classname='full'),
+    edit_handlers.FieldPanel('body', classname='full'),
 ]
 
 BlogPage.promote_panels = Page.promote_panels + [
-    FieldPanel('tags'),
+    edit_handlers.FieldPanel('tags'),
 ]
 
 BlogPage.parent_page_types = [
@@ -27,8 +27,8 @@ BlogPage.subpage_types = []
 # BlogIndexPage
 
 BlogIndexPage.content_panels = Page.content_panels + [
-    FieldPanel('subtitle', classname='full'),
-    ImageChooserPanel('main_image'),
+    edit_handlers.FieldPanel('subtitle', classname='full'),
+    image_edit_handlers.ImageChooserPanel('main_image'),
 ]
 
 BlogIndexPage.subpage_types = [
