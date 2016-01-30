@@ -1,6 +1,6 @@
 {% macro heading(heading, subheading=None, background_image=None) %}
     {% if not background_image %}
-        {% set background_image = static('base/img/default_bg.jpg') %}
+        {% set background_image = static('base/images/default_bg.jpg') %}
     {% endif %}
 
     <header class="intro-header" style="background-image: url('{{ background_image }}')">

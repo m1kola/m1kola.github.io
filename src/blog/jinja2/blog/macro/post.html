@@ -45,7 +45,7 @@
     {% if post.main_image %}
         {% set background_image = post.main_image.file.url %}
     {% else %}
-        {% set background_image = static('base/img/default_bg.jpg') %}
+        {% set background_image = static('base/images/default_bg.jpg') %}
     {% endif %}
 
     <header class="intro-header" style="background-image: url('{{ background_image }}')">
