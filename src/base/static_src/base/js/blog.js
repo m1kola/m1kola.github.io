@@ -10,8 +10,8 @@ jQuery(document).ready(function($) {
                 previousTop: 0
             },
             function() {
-                var currentTop = $(window).scrollTop(),
-                    $navbar = $('.navbar-custom');
+                var currentTop = $(window).scrollTop();
+                var $navbar = $('.navbar-custom');
 
                 // Check if user is scrolling up
                 if (currentTop < this.previousTop) {
@@ -26,8 +26,10 @@ jQuery(document).ready(function($) {
                     $navbar.removeClass('is-visible');
                     if (currentTop > headerHeight && !$navbar.hasClass('is-fixed')) $navbar.addClass('is-fixed');
                 }
+
                 this.previousTop = currentTop;
             }
+
         );
     }
 });

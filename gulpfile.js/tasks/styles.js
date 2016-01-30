@@ -16,9 +16,6 @@ gulp.task('styles', ['styles:sass', 'styles:css']);
 gulp.task('styles:css', simpleCopyTask('css/**/*'));
 
 gulp.task('styles:sass', function () {
-    // Wagtail Sass files include each other across applications,
-    // e.g. wagtailimages Sass files will include wagtailadmin/sass/mixins.scss
-    // Thus, each app is used as an includePath.
     var includePaths = flatten(config.apps.map(function(app) { return app.scssIncludePaths(); }));
 
     // Not all files in a directory need to be compiled, so each app defines
@@ -36,7 +33,7 @@ gulp.task('styles:sass', function () {
             cascade: false
         }))
         .pipe(gulp.dest(function(file) {
-            // e.g. wagtailadmin/scss/core.scss -> wagtailadmin/css/core.css
+            // e.g. pages/scss/core.scss -> pages/css/core.css
             // Changing the suffix is done by Sass automatically
             return file.base
                 .replace(
