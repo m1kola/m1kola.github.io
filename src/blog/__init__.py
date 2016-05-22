@@ -10,7 +10,7 @@ _DEFAULT_SETTINGS = {
 
 class Settings(object):
     def __init__(self):
-        for key, value in _DEFAULT_SETTINGS.iteritems():
+        for key, value in _DEFAULT_SETTINGS.items():
             actual_value = getattr(global_settings, 'BLOG_%s' % key, value)
             setattr(self, key, actual_value)
 

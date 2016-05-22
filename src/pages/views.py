@@ -58,7 +58,7 @@ class AboutView(TemplateView):
             JobPosition(
                 company_name=_(u'StartupLabs Inc.'),
                 position=_(u'Team Lead'),
-                start_at=date(2013, 04, 1),
+                start_at=date(2013, 4, 1),
                 leave_at=date(2013, 11, 1),
                 location=_(u'Минск'),
                 website='itstartuplabs.com',
