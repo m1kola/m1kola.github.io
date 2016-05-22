@@ -1,43 +1,44 @@
-blog:
-  build: .
-  links:
-    - postgres:postgres
-  volumes_from:
-    - blog_data
-  env_file: ./blog.env
+version: '2'
 
-blog_post_update:
-  build: .
-  links:
-    - postgres:postgres
-  volumes_from:
-    - blog_data
-  env_file: ./blog.env
-  command: bash -c "python manage.py migrate --noinput && python manage.py collectstatic --noinput"
+services:
+  blog:
+    build: .
+    links:
+      - postgres:postgres
+    depends_on:
+      - postgres
+      - blog_data
+    volumes_from:
+      - blog_data
+    env_file: ./blog.env
 
-blog_data:
-  image: python:2.7-slim
-  volumes:
-    - /var/blog
-  command: "true"
+  blog_data:
+    image: python:2.7-slim
+    volumes:
+      - /var/blog
+    command: "true"
 
-nginx:
-  build: ./nginx
-  links:
-    - blog
-  volumes_from:
-    - blog
-  ports:
-    - "80:80"
-#    - "443:443"
+  nginx:
+    build: ./nginx
+    links:
+      - blog
+    volumes_from:
+      - blog_data
+    depends_on:
+      - blog_data
+    ports:
+      - "80:80"
+#      - "443:443"
 
-postgres:
-  image: postgres:9.4
-  volumes_from:
-    - postgres_data
+  postgres:
+    image: postgres:9.5
+    volumes_from:
+      - postgres_data
+    depends_on:
+      - postgres_data
 
-postgres_data:
-  image: postgres:9.4
-  volumes:
-    - /var/lib/postgresql
-  command: "true"
+  postgres_data:
+    image: postgres:9.5
+    volumes:
+      - /var/lib/postgresql
+    command: "true"
