@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'modelcluster',
 
     'base',
-    'pages',
+    'content.pages',
     'content.blog',
 ]
 

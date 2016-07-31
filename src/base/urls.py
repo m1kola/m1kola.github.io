@@ -7,7 +7,7 @@ from wagtail.wagtailcore import urls as wagtail_urls
 from wagtail.wagtaildocs import urls as wagtaildocs_urls
 
 from content.blog import urls as blog_urls
-from pages import urls as pages_urls
+from content.pages import urls as pages_urls
 
 urlpatterns = [
     url(r'^cms/', include(wagtailadmin_urls)),
