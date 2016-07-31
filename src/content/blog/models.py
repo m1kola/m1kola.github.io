@@ -4,8 +4,10 @@ from django.db import models
 from modelcluster.contrib import taggit
 from modelcluster.fields import ParentalKey
 from taggit.models import TaggedItemBase
+from wagtail.wagtailadmin import edit_handlers
 from wagtail.wagtailcore import fields as wt_fields
 from wagtail.wagtailcore.models import Page
+from wagtail.wagtailimages import edit_handlers as image_edit_handlers
 
 from . import settings as app_settings
 
@@ -26,6 +28,20 @@ class BlogPage(Page):
         on_delete=models.SET_NULL,
         related_name='+'
     )
+
+    content_panels = Page.content_panels + [
+        edit_handlers.FieldPanel('subtitle', classname='full'),
+        image_edit_handlers.ImageChooserPanel('main_image'),
+        edit_handlers.FieldPanel('lead', classname='full'),
+        edit_handlers.FieldPanel('body', classname='full'),
+    ]
+
+    promote_panels = Page.promote_panels + [
+        edit_handlers.FieldPanel('tags'),
+    ]
+
+    parent_page_types = ['blog.BlogIndexPage']
+    subpage_types = []
 
 
 class BlogIndexPage(Page):
@@ -67,3 +83,12 @@ class BlogIndexPage(Page):
         context = super(BlogIndexPage, self).get_context(request)
         context['posts'] = blogs
         return context
+
+    content_panels = Page.content_panels + [
+        edit_handlers.FieldPanel('subtitle', classname='full'),
+        image_edit_handlers.ImageChooserPanel('main_image'),
+    ]
+
+    subpage_types = [
+        BlogPage,
+    ]

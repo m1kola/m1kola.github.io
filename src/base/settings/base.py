@@ -48,7 +48,7 @@ INSTALLED_APPS = [
 
     'base',
     'pages',
-    'blog',
+    'content.blog',
 ]
 
 MIDDLEWARE_CLASSES = (
