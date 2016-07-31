@@ -9,6 +9,7 @@ from wagtail.wagtailcore import fields as wt_fields
 from wagtail.wagtailcore.models import Page
 from wagtail.wagtailimages import edit_handlers as image_edit_handlers
 
+from base.models import BaseFields
 from . import settings as app_settings
 
 
@@ -16,18 +17,10 @@ class BlogPageTag(TaggedItemBase):
     content_object = ParentalKey('BlogPage', related_name='tagged_items')
 
 
-class BlogPage(Page):
-    subtitle = models.CharField(max_length=256, blank=True)
+class BlogPage(Page, BaseFields):
     lead = wt_fields.RichTextField(blank=True)
     body = wt_fields.RichTextField()
     tags = taggit.ClusterTaggableManager(through=BlogPageTag, blank=True)
-    main_image = models.ForeignKey(
-        'wagtailimages.Image',
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='+'
-    )
 
     content_panels = Page.content_panels + [
         edit_handlers.FieldPanel('subtitle', classname='full'),
@@ -44,15 +37,7 @@ class BlogPage(Page):
     subpage_types = []
 
 
-class BlogIndexPage(Page):
-    subtitle = models.CharField(max_length=256, blank=True)
-    main_image = models.ForeignKey(
-        'wagtailimages.Image',
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='+'
-    )
+class BlogIndexPage(Page, BaseFields):
 
     @property
     def blog_pages(self):
