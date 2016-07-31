@@ -1,0 +1,40 @@
+{% for job_position in value %}
+    <div class="row">
+        <div class="col-md-2">
+            {{ job_position.start_at|date('F Y') }} —
+            {% if job_position.leave_at == now().date() %}
+                {{ _('по настоящее время') }}
+            {% else %}
+                {{ job_position.leave_at|date('F Y') }}
+            {% endif %}
+            <br>
+            <small>
+                {{ job_position.start_at|timesince(job_position.leave_at) }}
+            </small>
+        </div>
+        <div class="col-md-10">
+            <strong>{{ job_position.company_name }}</strong>
+            <br>
+            {% if job_position.location or job_position.website %}
+                {% if job_position.location %}{{ job_position.location }}{% endif %}
+                {%- if job_position.website -%}
+                    , <a href="http://{{ job_position.website }}">{{ job_position.website }}</a>
+                {% endif %}
+                <br>
+            {% endif %}
+            <br>
+
+            <strong>{{ job_position.position }}</strong>
+            <br>
+            {% if job_position.responsibilities|trim %}
+                <div>{{ _('Обязанности') }}:</div>
+                {{ job_position.responsibilities|richtext|safe }}
+            {% endif %}
+
+            {% if job_position.achievements|trim %}
+                <div>{{ _('Достижения') }}:</div>
+                {{ job_position.achievements|richtext|safe }}
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}

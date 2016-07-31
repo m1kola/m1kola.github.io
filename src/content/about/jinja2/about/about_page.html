@@ -1,0 +1,18 @@
+{% extends 'base/_base.html' %}
+
+{% import 'base/macro/common.html' as common_macro %}
+
+{% block main_content %}
+    {{ common_macro.heading(
+        heading=page.title,
+        subheading=page.subtitle
+    ) }}
+
+    <div class="container about">
+        {% for block in page.body %}
+            <section>{{ block|safe }}</section>
+        {% endfor %}
+    </div>
+
+    <hr>
+{% endblock %}

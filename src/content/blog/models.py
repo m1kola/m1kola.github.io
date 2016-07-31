@@ -59,4 +59,4 @@ class BlogIndexPage(Page, BaseFields):
 
     content_panels = Page.content_panels + BaseFields.content_panels
 
-    subpage_types = ['blog.BlogPage']
+    parent_page_types = ['wagtailcore.Page']

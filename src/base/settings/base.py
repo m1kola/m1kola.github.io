@@ -24,6 +24,11 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'base',
+    'content.about',
+    'content.pages',
+    'content.blog',
+
     'django.contrib.admin',  # Used only for urlify.js in wagtail :(
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -45,10 +50,6 @@ INSTALLED_APPS = [
 
     'taggit',
     'modelcluster',
-
-    'base',
-    'content.pages',
-    'content.blog',
 ]
 
 MIDDLEWARE_CLASSES = (
