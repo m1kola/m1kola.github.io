@@ -1,6 +1,6 @@
 # Project
 node_modules
-base/settings/local.py
+src/base/settings/local.py
 
 # IDEs
 .idea
