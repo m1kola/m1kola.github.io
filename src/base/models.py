@@ -1,4 +1,6 @@
 from django.db import models
+from wagtail.wagtailadmin import edit_handlers
+from wagtail.wagtailimages import edit_handlers as image_edit_handlers
 
 
 class BaseFields(models.Model):
@@ -10,6 +12,11 @@ class BaseFields(models.Model):
         on_delete=models.SET_NULL,
         related_name='+'
     )
+
+    content_panels = [
+        edit_handlers.FieldPanel('subtitle', classname='full'),
+        image_edit_handlers.ImageChooserPanel('main_image'),
+    ]
 
     class Meta:
         abstract = True

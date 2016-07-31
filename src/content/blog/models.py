@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -*-
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.db import models
 from modelcluster.contrib import taggit
 from modelcluster.fields import ParentalKey
 from taggit.models import TaggedItemBase
+from wagtail.utils.pagination import paginate
 from wagtail.wagtailadmin import edit_handlers
 from wagtail.wagtailcore import fields as wt_fields
 from wagtail.wagtailcore.models import Page
-from wagtail.wagtailimages import edit_handlers as image_edit_handlers
 
 from base.models import BaseFields
-from . import settings as app_settings
 
 
 class BlogPageTag(TaggedItemBase):
@@ -22,9 +19,7 @@ class BlogPage(Page, BaseFields):
     body = wt_fields.RichTextField()
     tags = taggit.ClusterTaggableManager(through=BlogPageTag, blank=True)
 
-    content_panels = Page.content_panels + [
-        edit_handlers.FieldPanel('subtitle', classname='full'),
-        image_edit_handlers.ImageChooserPanel('main_image'),
+    content_panels = Page.content_panels + BaseFields.content_panels + [
         edit_handlers.FieldPanel('lead', classname='full'),
         edit_handlers.FieldPanel('body', classname='full'),
     ]
@@ -56,24 +51,12 @@ class BlogIndexPage(Page, BaseFields):
         if tag:
             blog_pages = blog_pages.filter(tags__name=tag)
 
-        page = request.GET.get('page')
-        paginator = Paginator(blog_pages, app_settings.POSTS_PAGE_SIZE)
-        try:
-            blogs = paginator.page(page)
-        except PageNotAnInteger:
-            blogs = paginator.page(1)
-        except EmptyPage:
-            blogs = paginator.page(paginator.num_pages)
+        paginator, page = paginate(request, blog_pages)
 
         context = super(BlogIndexPage, self).get_context(request)
-        context['posts'] = blogs
+        context['posts'] = page
         return context
 
-    content_panels = Page.content_panels + [
-        edit_handlers.FieldPanel('subtitle', classname='full'),
-        image_edit_handlers.ImageChooserPanel('main_image'),
-    ]
+    content_panels = Page.content_panels + BaseFields.content_panels
 
-    subpage_types = [
-        BlogPage,
-    ]
+    subpage_types = ['blog.BlogPage']

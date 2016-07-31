@@ -3,7 +3,6 @@ from datetime import datetime, time
 from django.conf import settings
 from django.contrib.syndication.views import Feed
 
-from . import settings as app_settings
 from .models import BlogPage
 
 
@@ -15,7 +14,7 @@ class BlogFeed(Feed):
     # description = 'The latest news and views from Torchbox on the work we do, the web and the wider world'
 
     def items(self):
-        return BlogPage.objects.live().order_by('-first_published_at')[:app_settings.POSTS_PAGE_SIZE]
+        return BlogPage.objects.live().order_by('-first_published_at')[:20]
 
     def item_title(self, item):
         return item.title
