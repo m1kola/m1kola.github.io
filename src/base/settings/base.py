@@ -26,7 +26,6 @@ ALLOWED_HOSTS = [
 INSTALLED_APPS = [
     'base',
     'content.about',
-    'content.pages',
     'content.blog',
 
     'django.contrib.admin',  # Used only for urlify.js in wagtail :(

@@ -22,8 +22,8 @@ App.prototype.scssSources = function() {
 };
 
 var apps = [
-    new App('src/base'),
-    new App('src/pages')
+    new App('src/content/base'),
+    new App('src/content/about')
 ];
 
 module.exports = {
