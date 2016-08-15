@@ -9,9 +9,7 @@
     ) }}
 
     <div class="container about">
-        {% for block in page.body %}
-            <section>{{ block|safe }}</section>
-        {% endfor %}
+        {% include_block page.body %}
     </div>
 
     <hr>

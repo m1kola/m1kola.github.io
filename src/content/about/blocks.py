@@ -12,9 +12,10 @@ class AboutBlock(StoryBlock):
             ('start_at', blocks.DateBlock()),
             ('leave_at', blocks.DateBlock(required=False)),
             ('location', blocks.CharBlock(required=False)),
-            ('website', blocks.CharBlock(required=False)),
-            ('responsibilities', blocks.RichTextBlock(required=False)),
-            ('achievements', blocks.RichTextBlock(required=False)),
+            ('website', blocks.URLBlock(required=False)),
+            ('description', blocks.RichTextBlock(required=False)),
         ], label=_("Accordion item"), icon="doc-full"),
         icon="doc-full", template="about/blocks/position_item_block.html"
     )
+    key_skils = blocks.ListBlock(blocks.CharBlock(),
+                                 template = "about/blocks/key_skils_block.html")
