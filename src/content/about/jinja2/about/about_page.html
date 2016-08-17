@@ -2,6 +2,11 @@
 
 {% import 'base/macro/common.html' as common_macro %}
 
+{% block document_css %}
+    {{ super() }}
+    <link href="{{ static('about/css/styles.css') }}" rel="stylesheet">
+{% endblock %}
+
 {% block main_content %}
     {{ common_macro.heading(
         heading=page.title,
