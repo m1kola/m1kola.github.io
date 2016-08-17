@@ -9,6 +9,15 @@ from content.about.blocks import AboutBlock
 class AboutPage(Page, BaseFields):
     body = wt_fields.StreamField(AboutBlock())
 
-    content_panels = Page.content_panels + BaseFields.content_panels + [
+    parent_page_types = ['home.HomePage']
+    subpage_types = []
+
+    content_panels = Page.content_panels + [
         StreamFieldPanel('body'),
     ]
+
+    promote_panels = Page.promote_panels + BaseFields.promote_panels
+
+    @classmethod
+    def can_create_at(cls, parent):
+        return super().can_create_at(parent) and not cls.objects.count()

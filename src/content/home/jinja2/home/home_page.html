@@ -1,0 +1,20 @@
+{% extends 'base/_base.html' %}
+{% import 'base/macro/common.html' as common_macro %}
+{% import 'blog/macro/post.html' as post_macro %}
+
+{% block main_content %}
+    {{ common_macro.heading(page.title, page.subtitle, page.main_image.file.url if page.main_image.file else None) }}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                {% for post in posts %}
+                    {{ post_macro.preview(post) }}
+                {% endfor %}
+
+                {{ post_macro.pagination(posts) }}
+            </div>
+        </div>
+    </div>
+    <hr>
+{% endblock %}

@@ -13,7 +13,7 @@ class BaseFields(models.Model):
         related_name='+'
     )
 
-    content_panels = [
+    promote_panels = [
         edit_handlers.FieldPanel('subtitle', classname='full'),
         image_edit_handlers.ImageChooserPanel('main_image'),
     ]

@@ -25,15 +25,9 @@ ALLOWED_HOSTS = [
 
 INSTALLED_APPS = [
     'base',
+    'content.home',
     'content.about',
     'content.blog',
-
-    'django.contrib.admin',  # Used only for urlify.js in wagtail :(
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
 
     'wagtail.wagtailforms',
     'wagtail.wagtailredirects',
@@ -49,6 +43,13 @@ INSTALLED_APPS = [
 
     'taggit',
     'modelcluster',
+
+    'django.contrib.admin',  # Used only for urlify.js in wagtail :(
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
 ]
 
 MIDDLEWARE_CLASSES = (
