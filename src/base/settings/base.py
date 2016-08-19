@@ -10,15 +10,11 @@ BASE_DIR = os.path.abspath(
 )
 
 
-SECRET_KEY = 'q5s1-!t2yqz2j0go6zt39^2gjmf*d$e%#4e5g#69*!=xma*vgm'
-
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = [
-    '127.0.0.1',
-    'mikola.by',
-]
+
+ALLOWED_HOSTS = []
 
 
 # Application definition

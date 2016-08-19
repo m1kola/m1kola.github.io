@@ -1,8 +1,10 @@
 from .base import *  # NOQA
 
 
+DEBUG = True
+
+
 INSTALLED_APPS += [
-    'debug_toolbar',
     'wagtail.contrib.wagtailstyleguide',
 ]
 
