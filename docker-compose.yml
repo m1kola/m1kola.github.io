@@ -28,7 +28,6 @@ services:
       - blog_data
     ports:
       - "80:80"
-#      - "443:443"
 
   postgres:
     image: postgres:9.5
