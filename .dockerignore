@@ -1,4 +1,4 @@
-# ATTENTION! Don't forget to update .dockerignore
+# ATTENTION! Don't forget to update .gitignore
 
 # Project
 /node_modules
