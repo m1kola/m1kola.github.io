@@ -13,7 +13,7 @@ services:
     env_file: ./blog.env
 
   blog_data:
-    image: python:2.7-slim
+    image: python:3.5-slim
     volumes:
       - /var/blog
     command: "true"
