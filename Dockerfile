@@ -6,8 +6,8 @@ RUN apt-get update && apt-get install -y \
 	--no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 ENV APP_ROOT=/app \
-    STATIC_ROOT=/var/blog/static \
-    MEDIA_ROOT=/var/blog/media
+    CFG_STATIC_ROOT=/var/blog/static \
+    CFG_MEDIA_ROOT=/var/blog/media
 
 ADD src/ $APP_ROOT
 WORKDIR $APP_ROOT

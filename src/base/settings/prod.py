@@ -1,6 +1,7 @@
 from .base import *  # NOQA
 
 
+# Just to make sure
 DEBUG = False
 
 

@@ -10,7 +10,10 @@ services:
       - blog_data
     volumes_from:
       - blog_data
-    env_file: ./blog.env
+    env_file:
+      - ./blog.env
+      # You need to have this file to be able to work with docker
+      - ~/.docker/secrets/blog.env
 
   blog_data:
     image: python:3.5-slim

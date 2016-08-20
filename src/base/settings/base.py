@@ -2,6 +2,13 @@ import os
 from datetime import datetime
 
 
+# Get CFG_* vars from the environment
+cfg_env = {}
+for key, value in os.environ.items():
+    if key.startswith('CFG_'):
+        cfg_env[key[4:]] = value
+
+
 gettext_noop = lambda s: s
 
 
@@ -14,7 +21,11 @@ BASE_DIR = os.path.abspath(
 DEBUG = False
 
 
-ALLOWED_HOSTS = []
+if 'SECRET_KEY' in cfg_env:
+    SECRET_KEY = cfg_env['SECRET_KEY']
+
+if 'ALLOWED_HOSTS' in cfg_env:
+    ALLOWED_HOSTS = cfg_env['ALLOWED_HOSTS'].split(',')
 
 
 # Application definition
@@ -108,11 +119,11 @@ WSGI_APPLICATION = 'base.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('BLOG_DATABASES_DEFAULT_NAME', 'postgres'),
-        'USER': os.environ.get('BLOG_DATABASES_DEFAULT_USER', 'postgres'),
-        'PASSWORD': os.environ.get('BLOG_DATABASES_DEFAULT_PASSWORD', 'postgres'),
-        'HOST': os.environ.get('BLOG_DATABASES_DEFAULT_HOST', 'postgres'),
-        'PORT': os.environ.get('BLOG_DATABASES_DEFAULT_PORT', '5432'),
+        'NAME': cfg_env.get('BLOG_DATABASES_DEFAULT_NAME', 'postgres'),
+        'USER': cfg_env.get('BLOG_DATABASES_DEFAULT_USER', 'postgres'),
+        'PASSWORD': cfg_env.get('BLOG_DATABASES_DEFAULT_PASSWORD', 'postgres'),
+        'HOST': cfg_env.get('BLOG_DATABASES_DEFAULT_HOST', 'postgres'),
+        'PORT': cfg_env.get('BLOG_DATABASES_DEFAULT_PORT', '5432'),
     }
 }
 
@@ -143,10 +154,10 @@ LOCALE_PATHS = (
 # Static files (CSS, JavaScript, Images) and media files (uploaded content)
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.environ.get('STATIC_ROOT', os.path.join(BASE_DIR, 'static'))
+STATIC_ROOT = cfg_env.get('STATIC_ROOT', os.path.join(BASE_DIR, 'static'))
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.environ.get('MEDIA_ROOT', os.path.join(BASE_DIR, 'media'))
+MEDIA_ROOT = cfg_env.get('MEDIA_ROOT', os.path.join(BASE_DIR, 'media'))
 
 
 # Wagtail
