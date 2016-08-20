@@ -6,11 +6,11 @@ RUN apt-get update && apt-get install -y \
 	--no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 ENV APP_ROOT=/app \
-    APP_VAR_ROOT=/var/blog
+    STATIC_ROOT=/var/blog/static \
+    MEDIA_ROOT=/var/blog/media
 
 ADD src/ $APP_ROOT
 WORKDIR $APP_ROOT
-VOLUME $APP_VAR_ROOT
 
 RUN pip install -r requirements/requirements.txt && \
     python manage.py compilemessages -v 3
