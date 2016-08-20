@@ -1,8 +1,8 @@
 # ATTENTION! Don't forget to update .gitignore
 
 # Project
-/node_modules
-/src/base/settings/local.py
+node_modules
+src/base/settings/local.py
 
 # IDEs
 .idea
