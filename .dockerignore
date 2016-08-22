@@ -1,7 +1,7 @@
 # ATTENTION! Don't forget to update .gitignore
 
 # Project
-node_modules
+src/node_modules
 src/blog/base/settings/local.py
 
 # IDEs
