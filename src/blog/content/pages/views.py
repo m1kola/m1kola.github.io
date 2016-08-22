@@ -5,7 +5,7 @@ from datetime import date
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView
 
-from content.pages.models import JobPosition
+from blog.content.pages.models import JobPosition
 
 
 class AboutView(TemplateView):

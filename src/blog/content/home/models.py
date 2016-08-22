@@ -3,8 +3,8 @@ from __future__ import absolute_import, unicode_literals
 from wagtail.utils.pagination import paginate
 from wagtail.wagtailcore.models import Page
 
-from base.models import BaseFields
-from content.blog.models import BlogPage
+from blog.base.models import BaseFields
+from blog.content.blog.models import BlogPage
 
 
 class HomePage(Page, BaseFields):

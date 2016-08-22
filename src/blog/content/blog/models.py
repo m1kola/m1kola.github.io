@@ -6,7 +6,7 @@ from wagtail.wagtailadmin import edit_handlers
 from wagtail.wagtailcore import fields as wt_fields
 from wagtail.wagtailcore.models import Page
 
-from base.models import BaseFields
+from blog.base.models import BaseFields
 
 
 class BlogPageTag(TaggedItemBase):

@@ -2,7 +2,7 @@
 
 # Project
 node_modules
-src/base/settings/local.py
+src/blog/base/settings/local.py
 
 # IDEs
 .idea

@@ -13,7 +13,7 @@ gettext_noop = lambda s: s
 
 
 BASE_DIR = os.path.abspath(
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..')
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..')
 )
 
 
@@ -31,10 +31,10 @@ if 'ALLOWED_HOSTS' in cfg_env:
 # Application definition
 
 INSTALLED_APPS = [
-    'base',
-    'content.home',
-    'content.about',
-    'content.blog',
+    'blog.base',
+    'blog.content.home',
+    'blog.content.about',
+    'blog.content.blog',
 
     'wagtail.wagtailforms',
     'wagtail.wagtailredirects',
@@ -74,7 +74,7 @@ MIDDLEWARE_CLASSES = (
     'wagtail.wagtailredirects.middleware.RedirectMiddleware',
 )
 
-ROOT_URLCONF = 'base.urls'
+ROOT_URLCONF = 'blog.base.urls'
 
 TEMPLATES = [
     {
@@ -82,7 +82,7 @@ TEMPLATES = [
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
-            'environment': 'base.jinja2_env.environment',
+            'environment': 'blog.base.jinja2_env.environment',
             'extensions': [
                 'jinja2.ext.i18n',
                 'wagtail.wagtailcore.jinja2tags.core',
@@ -110,7 +110,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'base.wsgi.application'
+WSGI_APPLICATION = 'blog.base.wsgi.application'
 
 
 # Database

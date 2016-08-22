@@ -1,7 +1,7 @@
 from django.utils.translation import ugettext_lazy as _
 from wagtail.wagtailcore import blocks
 
-from base.blocks import StoryBlock
+from blog.base.blocks import StoryBlock
 
 
 class AboutBlock(StoryBlock):

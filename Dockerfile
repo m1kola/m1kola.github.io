@@ -16,7 +16,7 @@ RUN pip install -r requirements/requirements.txt && \
     python manage.py compilemessages -v 3
 
 CMD uwsgi --chdir=$APP_ROOT \
-          --module=base.wsgi \
+          --module=blog.base.wsgi \
           --processes=10 \
           --http=:8080 \
           --harakiri=20 \
