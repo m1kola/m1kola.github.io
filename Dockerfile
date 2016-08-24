@@ -1,8 +1,8 @@
 FROM python:3.5-slim
 
 RUN apt-get update && apt-get install -y \
-		postgresql-client libpq-dev \
-		gcc gettext \
+    postgresql-client libpq-dev \
+    gcc gettext \
 	--no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 ENV APP_ROOT=/app \

@@ -1,0 +1,10 @@
+FROM node:6.4
+
+ENV APP_ROOT=/app
+
+ADD src/ $APP_ROOT
+WORKDIR $APP_ROOT
+
+RUN npm install
+
+CMD [ "npm", "run", "build" ]

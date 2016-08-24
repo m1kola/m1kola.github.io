@@ -1,6 +1,7 @@
 version: '2'
 
 services:
+  # App.
   blog:
     build: .
     links:
@@ -15,12 +16,27 @@ services:
       # You need to have this file to be able to work with docker
       - ~/.docker/secrets/blog.env
 
+  # Builds front-end for the app.
+  blog_frontend_build:
+    build:
+      context: .
+      dockerfile: Dockerfile-frontend_build
+    depends_on:
+      - blog
+      - blog_data
+    volumes_from:
+      - blog_data
+#    command: "ls -la"
+
+  # For static and media files
   blog_data:
     image: python:3.5-slim
     volumes:
       - /var/blog
     command: "true"
 
+  # Nginx. Serves static and media files from `blog_data` and app from `blog`
+  # Note: allows to run only this app.
   nginx:
     build: ./nginx
     links:
@@ -32,6 +48,7 @@ services:
     ports:
       - "80:80"
 
+  # Postgres. Saves data in `postgres_data`'s volume.
   postgres:
     image: postgres:9.5
     volumes_from:
