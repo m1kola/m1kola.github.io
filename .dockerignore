@@ -1,8 +1,12 @@
 # ATTENTION! Don't forget to update .gitignore
 
 # Project
+# The files and directories listed in this section may be created on run-time
 src/node_modules
+src/logs
+src/media
 src/blog/base/settings/local.py
+src/**/static
 
 # IDEs
 .idea
