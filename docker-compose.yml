@@ -26,7 +26,8 @@ services:
       - blog_data
     volumes_from:
       - blog_data
-#    command: "ls -la"
+    env_file:
+      - ./blog.env
 
   # For static and media files
   blog_data:

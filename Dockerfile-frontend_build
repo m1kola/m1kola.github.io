@@ -5,7 +5,6 @@ WORKDIR /app
 ADD src/package.json .
 RUN npm install
 
-ENV CFG_STATIC_ROOT=/var/blog/static
 
 ADD src/ .
 

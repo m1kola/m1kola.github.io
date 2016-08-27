@@ -10,8 +10,6 @@ WORKDIR /app
 ADD src/requirements/requirements.txt ./requirements/requirements.txt
 RUN pip install -r requirements/requirements.txt
 
-ENV CFG_STATIC_ROOT=/var/blog/static \
-    CFG_MEDIA_ROOT=/var/blog/media
 
 ADD src/ .
 RUN python manage.py compilemessages -v 3
