@@ -5,18 +5,18 @@ RUN apt-get update && apt-get install -y \
     gcc gettext \
 	--no-install-recommends && rm -rf /var/lib/apt/lists/*
 
-ENV APP_ROOT=/app \
-    CFG_STATIC_ROOT=/var/blog/static \
+ENV CFG_STATIC_ROOT=/var/blog/static \
     CFG_MEDIA_ROOT=/var/blog/media
 
-ADD src/ $APP_ROOT
-WORKDIR $APP_ROOT
+WORKDIR /app
 
-RUN pip install -r requirements/requirements.txt && \
-    python manage.py compilemessages -v 3
+ADD src/requirements/requirements.txt ./requirements/requirements.txt
+RUN pip install -r requirements/requirements.txt
 
-CMD uwsgi --chdir=$APP_ROOT \
-          --module=blog.base.wsgi \
+ADD src/ .
+RUN python manage.py compilemessages -v 3
+
+CMD uwsgi --module=blog.base.wsgi \
           --processes=10 \
           --http=:8080 \
           --harakiri=20 \

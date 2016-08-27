@@ -1,10 +1,11 @@
 FROM node:6.4
 
-ENV APP_ROOT=/app
+WORKDIR /app
 
-ADD src/ $APP_ROOT
-WORKDIR $APP_ROOT
-
+ADD src/package.json .
 RUN npm install
 
-CMD [ "npm", "run", "build" ]
+ADD src/ .
+RUN npm run build
+
+CMD [ "true" ]
