@@ -8,6 +8,6 @@ RUN npm install
 ENV CFG_STATIC_ROOT=/var/blog/static
 
 ADD src/ .
-RUN npm run build
 
-CMD [ "true" ]
+
+CMD [ "npm", "run", "build" ]
