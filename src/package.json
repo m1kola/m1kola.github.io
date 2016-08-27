@@ -12,6 +12,7 @@
   "devDependencies": {
     "browserify": "~3.46.1",
     "browserify-shim": "~3.4.1",
+    "event-stream": "^3.3.4",
     "gulp": "~3.8.11",
     "gulp-autoprefixer": "~3.0.2",
     "gulp-rename": "^1.2.2",

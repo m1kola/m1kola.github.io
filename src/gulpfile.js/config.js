@@ -1,24 +1,33 @@
 var path = require('path');
 
-var srcDir = 'static_src';
-var destDir = 'static';
+// var staticRootDir = process.env.CFG_STATIC_ROOT || null;
 
 var App = function(dir, options) {
+    this.srcDir = 'static_src';
+    this.destDir = 'static';
+
     this.dir = dir;
     this.options = options || {};
     this.appName = this.options.appName || path.basename(dir);
-    this.sourceFiles = path.join('.', this.dir, srcDir);
+    this.sourceFiles = path.join('.', this.dir, this.srcDir);
 };
 App.prototype = Object.create(null);
+App.prototype.processDestFile = function(file) {
+    return file.base
+        .replace(
+            '/' + this.srcDir + '/',
+            '/' + this.destDir + '/'
+        );
+};
 App.prototype.scssIncludePaths = function() {
     return [this.sourceFiles];
 };
-App.prototype.scssSources = function() {
+App.prototype.scssSourcePaths = function() {
     // Assume that any scss we care about is always within the expected 
     // "appname/static_url/appname/scss/" folder.
     // NB: this requires the user to adhere to sass's underscore prefixing
     // to tell the compiler what files are includes.
-    return path.join(this.sourceFiles, this.appName, '/scss/**/*.scss')
+    return path.join(this.sourceFiles, this.appName, '/scss/**/*.scss');
 };
 
 var apps = [
@@ -27,7 +36,5 @@ var apps = [
 ];
 
 module.exports = {
-    apps: apps,
-    srcDir: srcDir,
-    destDir: destDir
+    apps: apps
 };
