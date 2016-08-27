@@ -13,11 +13,14 @@ var App = function(dir, options) {
 };
 App.prototype = Object.create(null);
 App.prototype.processDestFile = function(file) {
-    return file.base
-        .replace(
-            '/' + this.srcDir + '/',
-            '/' + this.destDir + '/'
-        );
+    var srcDir = path.resolve(this.sourceFiles);
+
+    var destDir = this.destDir;
+    if (!path.isAbsolute(destDir)) {
+        destDir = path.resolve('.', this.dir, destDir)
+    }
+
+    return file.base.replace(srcDir, destDir)
 };
 App.prototype.scssIncludePaths = function() {
     return [this.sourceFiles];
