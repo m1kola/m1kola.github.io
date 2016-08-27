@@ -1,13 +1,12 @@
 var path = require('path');
 
-// var staticRootDir = process.env.CFG_STATIC_ROOT || null;
-
 var App = function(dir, options) {
-    this.srcDir = 'static_src';
-    this.destDir = 'static';
-
     this.dir = dir;
     this.options = options || {};
+
+    this.srcDir = 'static_src';
+    this.destDir = this.options.destDir || 'static';
+
     this.appName = this.options.appName || path.basename(dir);
     this.sourceFiles = path.join('.', this.dir, this.srcDir);
 };
@@ -33,9 +32,16 @@ App.prototype.scssSourcePaths = function() {
     return path.join(this.sourceFiles, this.appName, '/scss/**/*.scss');
 };
 
+var app_options = {};
+if (process.env.CFG_STATIC_ROOT) {
+    app_options = {
+        destDir: process.env.CFG_STATIC_ROOT
+    };
+}
+
 var apps = [
-    new App('blog/base'),
-    new App('blog/content/about')
+    new App('blog/base', app_options),
+    new App('blog/content/about', app_options)
 ];
 
 module.exports = {
