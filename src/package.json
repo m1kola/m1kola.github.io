@@ -24,8 +24,6 @@
   "dependencies": {},
   "scripts": {
     "build": "gulp build",
-    "start": "gulp watch",
-    "lint:js": "./node_modules/.bin/jscs ./src || true",
-    "format:js": "./node_modules/.bin/jscs ./src -x"
+    "watch": "gulp watch"
   }
 }
