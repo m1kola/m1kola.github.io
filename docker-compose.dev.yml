@@ -1,0 +1,57 @@
+version: '2'
+
+services:
+  blog_app:
+    extends:
+      file: docker-compose.common.yml
+      service: blog_app
+    env_file:
+      - blog.dev.env
+    volumes:
+      - "./src:/app"
+    volumes_from:
+      - blog_app_data
+    links:
+      - blog_postgres:postgres
+    depends_on:
+      - blog_postgres
+      - blog_app_data
+    ports:
+      - "8000:8000"
+    command: "python manage.py runserver 0.0.0.0:8000"
+
+
+  blog_app_frontend:
+    extends:
+      file: docker-compose.common.yml
+      service: blog_app_frontend
+    volumes:
+      - "./src:/app"
+    volumes_from:
+      - blog_app_data
+    depends_on:
+      - blog_app
+      - blog_app_data
+    command: "npm run watch"
+
+
+  blog_app_data:
+    extends:
+      file: docker-compose.common.yml
+      service: blog_app_data
+
+
+  blog_postgres:
+    extends:
+      file: docker-compose.common.yml
+      service: blog_postgres
+    volumes_from:
+      - blog_postgres_data
+    depends_on:
+      - blog_postgres_data
+
+
+  blog_postgres_data:
+    extends:
+      file: docker-compose.common.yml
+      service: blog_postgres_data
