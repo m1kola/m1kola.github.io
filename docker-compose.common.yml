@@ -1,0 +1,38 @@
+version: '2'
+
+services:
+  # The blog application
+  blog_app:
+    build: .
+    env_file:
+      - ./blog.prod.env
+
+
+  # Builds front-end for the app
+  blog_app_frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile-frontend_build
+    env_file:
+      - ./blog.prod.env
+
+
+  # Data container for the app. Stores statc and media files
+  blog_app_data:
+    image: python:3.5-slim
+    volumes:
+      - /var/blog
+    command: "true"
+
+
+  # Postgres
+  blog_postgres:
+    image: postgres:9.5
+
+
+  # Data container for the app's postgress.
+  blog_postgres_data:
+    image: postgres:9.5
+    volumes:
+      - /var/lib/postgresql
+    command: "true"
