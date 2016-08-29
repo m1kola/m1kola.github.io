@@ -25,8 +25,11 @@ services:
     extends:
       file: docker-compose.common.yml
       service: blog_app_frontend
+    env_file:
+      - blog.dev.env
     volumes:
       - "./src:/app"
+      - "/app/node_modules"
     volumes_from:
       - blog_app_data
     depends_on:
