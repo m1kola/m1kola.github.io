@@ -20,7 +20,7 @@ class BlogFeed(Feed):
         return item.title
 
     def item_description(self, item):
-        return item.lead if item.lead else item.lead
+        return item.lead if item.lead else ''
 
     def item_link(self, item):
         return item.full_url

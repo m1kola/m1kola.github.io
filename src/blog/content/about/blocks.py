@@ -18,4 +18,4 @@ class AboutBlock(StoryBlock):
         icon="doc-full", template="about/blocks/position_item_block.html"
     )
     key_skils = blocks.ListBlock(blocks.CharBlock(),
-                                 template = "about/blocks/key_skils_block.html")
+                                 template="about/blocks/key_skils_block.html")
