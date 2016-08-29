@@ -163,7 +163,17 @@ MEDIA_ROOT = cfg_env.get('MEDIA_ROOT', os.path.join(BASE_DIR, 'media'))
 # Wagtail
 
 WAGTAIL_SITE_NAME = 'mikola.by'
+
 TAGGIT_CASE_INSENSITIVE = True
+
+if 'WAGTAILSEARCH_BACKENDS_DEFAULT_URLS' in cfg_env:
+    WAGTAILSEARCH_BACKENDS = {
+        'default': {
+            'BACKEND': 'wagtail.wagtailsearch.backends.elasticsearch',
+            'URLS': cfg_env['WAGTAILSEARCH_BACKENDS_DEFAULT_URLS'].split(','),
+            'INDEX': cfg_env.get('WAGTAILSEARCH_BACKENDS_DEFAULT_INDEX', 'blog_app'),
+        }
+    }
 
 
 # Site constants

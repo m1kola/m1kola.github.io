@@ -12,9 +12,11 @@ services:
       - blog_app_data
     links:
       - blog_postgres:postgres
+      - blog_elasticsearch:elasticsearch
     depends_on:
       - blog_postgres
       - blog_app_data
+      - blog_elasticsearch
 
 
   # Runs migrations for the app. Production only, at the moment.
@@ -33,9 +35,11 @@ services:
       - blog_app_data
     links:
       - blog_postgres:postgres
+      - blog_elasticsearch:elasticsearch
     depends_on:
       - blog_postgres
       - blog_app_data
+      - blog_elasticsearch
 
 
   blog_app_frontend:
@@ -83,3 +87,9 @@ services:
     extends:
       file: docker-compose.common.yml
       service: blog_postgres_data
+
+
+  blog_elasticsearch:
+    extends:
+      file: docker-compose.common.yml
+      service: blog_elasticsearch
