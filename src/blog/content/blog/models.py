@@ -6,6 +6,7 @@ from wagtail.wagtailadmin import edit_handlers
 from wagtail.wagtailcore import fields as wt_fields
 from wagtail.wagtailcore.models import Page
 
+from blog.base.blocks import StoryBlock
 from blog.base.models import BaseFields
 
 
@@ -15,12 +16,12 @@ class BlogPageTag(TaggedItemBase):
 
 class BlogPage(Page, BaseFields):
     lead = wt_fields.RichTextField(blank=True)
-    body = wt_fields.RichTextField()
+    body = wt_fields.StreamField(StoryBlock())
     tags = taggit.ClusterTaggableManager(through=BlogPageTag, blank=True)
 
     content_panels = Page.content_panels + [
         edit_handlers.FieldPanel('lead', classname='full'),
-        edit_handlers.FieldPanel('body', classname='full'),
+        edit_handlers.StreamFieldPanel('body'),
     ]
 
     promote_panels = Page.promote_panels + BaseFields.promote_panels + [
