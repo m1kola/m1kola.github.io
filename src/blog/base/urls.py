@@ -8,7 +8,7 @@ from wagtail.wagtaildocs import urls as wagtaildocs_urls
 from blog.content.blog import urls as blog_urls
 
 urlpatterns = [
-    url(r'^cms/', include(wagtailadmin_urls)),
+    url(r'^admin/', include(wagtailadmin_urls)),
     url(r'^documents/', include(wagtaildocs_urls)),
     url(r'^', include(blog_urls, 'blog')),
     url(r'^', include(wagtail_urls)),
