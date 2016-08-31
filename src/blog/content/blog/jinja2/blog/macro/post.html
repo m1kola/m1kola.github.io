@@ -11,7 +11,7 @@
             {% endif %}
         </a>
         <p class="post-meta">{{ post.first_published_at|date() }}</p>
-        <div>{{ post.lead|richtext() }}</div>
+        <div>{{ post.lead|richtext }}</div>
     </div>
     <hr>
 {% endmacro %}
@@ -21,7 +21,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    {{ post.body|richtext }}
+                    {{ post.body }}
                 </div>
             </div>
         </div>
