@@ -21,7 +21,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    {{ post.body }}
+                    {% include_block post.body %}
                 </div>
             </div>
         </div>
@@ -29,16 +29,17 @@
 {% endmacro %}
 
 {% macro pagination(paginator) %}
-    <ul class="pager">
-        {% if paginator.has_next() %}
-            <li class="next">
-                <a href="?page={{ paginator.next_page_number() }}">
-                     {{ _('Предыдущие посты') }} &rarr;
-                </a>
-            </li>
-        {% endif %}
-    </ul>
-</nav>
+    <nav>
+        <ul class="pager">
+            {% if paginator.has_next() %}
+                <li class="next">
+                    <a href="?p={{ paginator.next_page_number() }}">
+                         {{ _('Предыдущие посты') }} &rarr;
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
 {% endmacro %}
 
 {% macro heading(post) %}

@@ -193,5 +193,3 @@ FOOTER_COPYRIGHT = 'Copyright &copy; %(title)s %(years)s' % {
         '%s' % COPYRIGHT_YEAR if COPYRIGHT_YEAR == datetime.now().year
         else '%s - %s' % (COPYRIGHT_YEAR, datetime.now().year),
 }
-
-INDEX_ROUTE_NAME = 'wagtail_serve'

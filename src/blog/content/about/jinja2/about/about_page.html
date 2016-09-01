@@ -13,9 +13,11 @@
         subheading=page.subtitle
     ) }}
 
-    <div class="container about">
-        {% include_block page.body %}
-    </div>
+    <article>
+        <div class="container about">
+            {% include_block page.body %}
+        </div>
+    </article>
 
     <hr>
 {% endblock %}
