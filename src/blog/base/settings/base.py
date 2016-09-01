@@ -82,12 +82,12 @@ TEMPLATES = [
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
-            'environment': 'blog.base.jinja2_env.environment',
             'extensions': [
                 'jinja2.ext.i18n',
                 'wagtail.wagtailcore.jinja2tags.core',
                 'wagtail.wagtailadmin.jinja2tags.userbar',
                 'wagtail.wagtailimages.jinja2tags.images',
+                'blog.base.jinja2tags.core',
             ]
         },
     },
