@@ -3,7 +3,7 @@
 {% import 'blog/macro/post.html' as post_macro %}
 
 {% block main_content %}
-    {{ common_macro.heading(page.title, page.subtitle, page.main_image.file.url if page.main_image.file else None) }}
+    {{ common_macro.heading(page) }}
 
     <div class="container">
         <div class="row">

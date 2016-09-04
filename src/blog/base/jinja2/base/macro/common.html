@@ -1,17 +1,15 @@
-{% macro heading(heading, subheading=None, background_image=None) %}
-    {% if not background_image %}
-        {% set background_image = static('base/images/default_bg.jpg') %}
-    {% endif %}
+{% macro heading(page) %}
+    {% set background_image = get_image_display(page) %}
 
     <header class="intro-header" style="background-image: url('{{ background_image }}')">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="site-heading">
-                        <h1>{{ heading }}</h1>
-                        {% if subheading %}
+                        <h1>{{ page.title }}</h1>
+                        {% if page.subtitle %}
                             <hr class="small">
-                            <span class="subheading">{{ subheading }}</span>
+                            <span class="subheading">{{ page.subtitle }}</span>
                         {% endif %}
                     </div>
                 </div>

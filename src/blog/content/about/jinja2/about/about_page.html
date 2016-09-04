@@ -8,10 +8,7 @@
 {% endblock %}
 
 {% block main_content %}
-    {{ common_macro.heading(
-        heading=page.title,
-        subheading=page.subtitle
-    ) }}
+    {{ common_macro.heading(page) }}
 
     <article>
         <div class="container about">

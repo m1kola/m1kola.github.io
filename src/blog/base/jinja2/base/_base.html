@@ -4,31 +4,19 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="{% block document_description -%}
-            {%- if page -%}
-                {%- if page.search_description -%}
-                    {{ page.search_description }}
-                {%- elif page.title -%}
-                    {{ page.title }}
-                {%- endif -%}
-            {%- endif -%}
-        {%- endblock %}">
-        <meta name="author" content="{% block document_author %}Mikalai Radchuk{% endblock %}">
+        <meta name="description" content="{% block document_description %}{{ get_description_display() }}{% endblock %}">
+        <meta name="author" content="{% block document_author %}{{ _("Mikalai Radchuk") }}{% endblock %}">
 
-        <title>
-            {%- block document_title -%}
-                {%- if page -%}
-                    {%- if page.seo_title -%}
-                        {{ page.seo_title }}
-                    {%- elif page.title -%}
-                        {{ page.title }}
-                    {%- else -%}
-                        {{ settings.SITE_TITLE }}
-                    {%- endif -%}
-                {%- endif -%}
-                {%- endblock -%}{%- block document_title_suffix -%}
-            {%- endblock -%}
-        </title>
+        <title>{% block document_title %}{{ get_title_display() }}{% endblock %}</title>
+
+        <meta property="og:title" content="{{ get_title_display() }}" />
+        <meta property="og:description" content="{{ get_description_display() }}" />
+        <meta property="og:image" content="{{ get_image_display() }}" />
+        {% if page -%}
+            <meta property="og:url" content="{{ page.full_url }}" />
+        {%- endif %}
+        <meta property="og:site_name" content="mikola.by" />
+        <meta property="og:type" content="website" />
 
         {% block document_css %}
             <link href="{{ static('base/css/vendor/bootstrap.min.css') }}" rel="stylesheet">

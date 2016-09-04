@@ -44,21 +44,17 @@
     </nav>
 {% endmacro %}
 
-{% macro heading(post) %}
-    {% if post.main_image %}
-        {% set background_image = post.main_image.file.url %}
-    {% else %}
-        {% set background_image = static('base/images/default_bg.jpg') %}
-    {% endif %}
+{% macro heading(page) %}
+    {% set background_image = get_image_display(page) %}
 
     <header class="intro-header" style="background-image: url('{{ background_image }}')">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="post-heading">
-                        <h1>{{ post.title }}</h1>
-                        {% if post.subtitle %}
-                            <h2 class="subheading">{{ post.subtitle }}</h2>
+                        <h1>{{ page.title }}</h1>
+                        {% if page.subtitle %}
+                            <h2 class="subheading">{{ page.subtitle }}</h2>
                         {% endif %}
 {#                        <span class="meta">{{ post.first_published_at|date() }}</span>#}
                     </div>
