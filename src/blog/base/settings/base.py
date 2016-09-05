@@ -131,7 +131,7 @@ DATABASES = {
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
 LANGUAGE_COOKIE_NAME = 'blog_lang'
-LANGUAGE_CODE = 'ru'
+LANGUAGE_CODE = 'en'
 LANGUAGES = (
     ('en', gettext_noop('English')),
     ('ru', gettext_noop('Russian')),
