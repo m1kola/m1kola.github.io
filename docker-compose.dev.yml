@@ -13,11 +13,9 @@ services:
       - blog_app_data
     links:
       - blog_postgres:postgres
-      - blog_elasticsearch:elasticsearch
     depends_on:
       - blog_postgres
       - blog_app_data
-      - blog_elasticsearch
     ports:
       - "8000:8000"
     command: "python manage.py runserver 0.0.0.0:8000"
@@ -60,9 +58,3 @@ services:
     extends:
       file: docker-compose.common.yml
       service: blog_postgres_data
-
-
-  blog_elasticsearch:
-    extends:
-      file: docker-compose.common.yml
-      service: blog_elasticsearch
