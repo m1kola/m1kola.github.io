@@ -27,6 +27,7 @@ class ProjectCoreExtension(jinja2.ext.Extension):
                 'SITE_TITLE': settings.SITE_TITLE,
                 'SOCIAL_MEDIA_URLS': settings.SOCIAL_MEDIA_URLS,
                 'FOOTER_COPYRIGHT': settings.FOOTER_COPYRIGHT,
+                'ENABLE_FILTERING_BY_TAG': getattr(settings, 'ENABLE_FILTERING_BY_TAG', True),
             },
         })
         self.environment.filters.update({

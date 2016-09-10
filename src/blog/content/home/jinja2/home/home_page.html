@@ -8,6 +8,17 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div>
+                    {# TODO: Neater styling #}
+                    {% if tags %}
+                        {{ _("Tags") }}:
+                        {% for tag in tags %}
+                            <a href="{{ pageurl(page) }}?tag={{ tag.slug }}">{{ tag.name }}</a>
+                            {%- if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
                 {% for post in posts %}
                     {{ post_macro.preview(post) }}
                 {% endfor %}

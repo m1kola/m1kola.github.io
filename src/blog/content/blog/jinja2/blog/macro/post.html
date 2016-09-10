@@ -57,6 +57,16 @@
                             <h2 class="subheading">{{ page.subtitle }}</h2>
                         {% endif %}
                         <span class="meta">{{ page.first_published_at|date() }}</span>
+                        <span class="meta">
+                            {% if settings.ENABLE_FILTERING_BY_TAG and page.tags %}
+                                {{ _("Tags") }}:
+                                {% for tag in page.tags.all() %}
+                                    {# TODO: Use slugurl. Needs request object in context #}
+                                    <a href="/?tag={{ tag.slug }}">{{ tag.name }}</a>
+                                    {%- if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </span>
                     </div>
                 </div>
             </div>

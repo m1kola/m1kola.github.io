@@ -1,5 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 
+from django.conf import settings
+from taggit.models import Tag
 from wagtail.utils.pagination import paginate
 from wagtail.wagtailcore.models import Page
 
@@ -16,7 +18,7 @@ class HomePage(Page, BaseFields):
     @property
     def blog_pages(self):
         # Get list of live blog pages that are descendants of this page
-        blogs = BlogPage.objects.live().descendant_of(self)
+        blogs = BlogPage.objects.descendant_of(self).live()
 
         # Order by most recent date first
         blogs = blogs.order_by('-first_published_at')
@@ -26,14 +28,20 @@ class HomePage(Page, BaseFields):
     def get_context(self, request, *args, **kwargs):
         blog_pages = self.blog_pages
 
-        tag = request.GET.get('tag')
-        if tag:
-            blog_pages = blog_pages.filter(tags__name=tag)
+        all_tags = None
+        if getattr(settings, 'ENABLE_FILTERING_BY_TAG', True):
+            all_tags = Tag.objects.all()
+            tag = request.GET.get('tag')
+            if tag:
+                blog_pages = blog_pages.filter(tags__name=tag)
 
         paginator, page = paginate(request, blog_pages)
 
         context = super(HomePage, self).get_context(request)
-        context['posts'] = page
+        context.update({
+            'posts': page,
+            'tags': all_tags,
+        })
         return context
 
     @classmethod
