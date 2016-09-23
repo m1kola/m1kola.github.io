@@ -61,7 +61,7 @@ services:
       file: docker-compose.common.yml
       service: blog_postgres
     volumes:
-      - "blog_postgres_data:/var/lib/postgresql"
+      - "blog_postgres_data:/var/lib/postgresql/data"
 
 
 volumes:
