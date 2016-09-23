@@ -50,6 +50,13 @@ def primary_nav(context):
 
 @jinja2.contextfunction
 def google_tag_manager(context):
+    if settings.DEBUG:
+        return mark_safe('')
+
+    request = context.get('request')
+    if request and request.is_preview:
+        return mark_safe('')
+
     google_tag_manager_id = getattr(settings, 'GOOGLE_TAG_MANAGER_ID', None)
 
     return mark_safe(render_to_string('base/tags/google_tag_manager.html', {
