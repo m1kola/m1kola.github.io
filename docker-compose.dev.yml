@@ -9,13 +9,12 @@ services:
       - blog.dev.env
     volumes:
       - "./src:/app"
-    volumes_from:
-      - blog_app_data
+    volumes:
+      - "blog_app_data:/var/blog"
     links:
       - blog_postgres:postgres
     depends_on:
       - blog_postgres
-      - blog_app_data
     ports:
       - "8000:8000"
     command: "python manage.py runserver 0.0.0.0:8000"
@@ -30,31 +29,21 @@ services:
     volumes:
       - "./src:/app"
       - "/app/node_modules"
-    volumes_from:
-      - blog_app_data
+    volumes:
+      - "blog_app_data:/var/blog"
     depends_on:
       - blog_app
-      - blog_app_data
     command: "npm run watch"
-
-
-  blog_app_data:
-    extends:
-      file: docker-compose.common.yml
-      service: blog_app_data
 
 
   blog_postgres:
     extends:
       file: docker-compose.common.yml
       service: blog_postgres
-    volumes_from:
-      - blog_postgres_data
-    depends_on:
-      - blog_postgres_data
+    volumes:
+      - "blog_postgres_data:/var/lib/postgresql"
 
 
-  blog_postgres_data:
-    extends:
-      file: docker-compose.common.yml
-      service: blog_postgres_data
+volumes:
+  blog_app_data: {}
+  blog_postgres_data: {}

@@ -16,23 +16,6 @@ services:
     env_file:
       - ./blog.prod.env
 
-
-  # Data container for the app. Stores statc and media files
-  blog_app_data:
-    image: python:3.5-slim
-    volumes:
-      - /var/blog
-    command: "true"
-
-
   # Postgres
   blog_postgres:
     image: postgres:9.5
-
-
-  # Data container for the app's postgress.
-  blog_postgres_data:
-    image: postgres:9.5
-    volumes:
-      - /var/lib/postgresql
-    command: "true"
