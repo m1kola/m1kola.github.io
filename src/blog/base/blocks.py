@@ -11,6 +11,9 @@ class CodeBlock(blocks.StructBlock):
     """
     Code Highlighting Block
     """
+
+    DEFAULT_LANG = 'bash'
+
     LANGUAGE_CHOICES = (
         ('python', _("Python")),
         ('php', _("PHP")),
@@ -29,8 +32,8 @@ class CodeBlock(blocks.StructBlock):
         icon = 'code'
 
     def render(self, value, context=None):
-        src = value['code'].strip('\n')
-        lang = value['language']
+        src = value.get('code', '').strip('\n')
+        lang = value.get('language') or self.DEFAULT_LANG
 
         lexer = get_lexer_by_name(lang)
         formatter = get_formatter_by_name('html', linenos=None, noclasses=False)
