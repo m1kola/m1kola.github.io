@@ -83,9 +83,10 @@ def get_description_display(context, page=None):
 
     page = page or context.get('page')
     if page:
-        description = page.title
         if page.search_description:
             description = page.search_description
+        elif getattr(page, 'subtitle'):
+            description = page.subtitle
 
     return description
 
