@@ -28,6 +28,7 @@ class ProjectCoreExtension(jinja2.ext.Extension):
                 'SOCIAL_MEDIA_URLS': settings.SOCIAL_MEDIA_URLS,
                 'FOOTER_COPYRIGHT': settings.FOOTER_COPYRIGHT,
                 'ENABLE_FILTERING_BY_TAG': getattr(settings, 'ENABLE_FILTERING_BY_TAG', True),
+                'FACEBOOK_APP_ID': getattr(settings, 'FACEBOOK_APP_ID', None),
             },
         })
         self.environment.filters.update({

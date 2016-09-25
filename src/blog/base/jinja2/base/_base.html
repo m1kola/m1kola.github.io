@@ -9,6 +9,9 @@
 
         <title>{% block document_title %}{{ get_title_display() }}{% endblock %}</title>
 
+        {% if settings.FACEBOOK_APP_ID -%}
+            <meta property="fb:app_id" content="{{ settings.FACEBOOK_APP_ID }}">
+        {%- endif %}
         <meta property="og:title" content="{{ get_title_display() }}">
         <meta property="og:description" content="{{ get_description_display() }}">
         <meta property="og:image" content="{{ get_image_display() }}">
