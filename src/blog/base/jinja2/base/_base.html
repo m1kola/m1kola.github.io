@@ -18,6 +18,10 @@
         <meta property="og:site_name" content="mikola.by">
         <meta property="og:type" content="website">
 
+        {% if page -%}
+            <link rel="canonical" href="{{ page.full_url }}">
+        {%- endif %}
+
         {% block document_css %}
             <link href="{{ static('base/css/vendor/bootstrap.min.css') }}" rel="stylesheet">
             <link href="{{ static('base/css/vendor/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
