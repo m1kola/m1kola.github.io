@@ -17,6 +17,12 @@ BASE_DIR = os.path.abspath(
 )
 
 
+# Admins
+
+if 'ADMINS' in cfg_env:
+    ADMINS = cfg_env['ADMINS'].split(',')
+
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
