@@ -20,8 +20,9 @@ class ProjectCoreExtension(jinja2.ext.Extension):
             'now': datetime.now,
             'primary_nav': primary_nav,
             'google_tag_manager': google_tag_manager,
-            'get_title_display': get_title_display,
-            'get_description_display': get_description_display,
+            'get_meta_title': get_meta_title,
+            'get_meta_description': get_meta_description,
+            'get_meta_image': get_meta_image,
             'get_image_display': get_image_display,
             'settings': {
                 'SITE_TITLE': settings.SITE_TITLE,
@@ -66,7 +67,7 @@ def google_tag_manager(context):
 
 
 @jinja2.contextfunction
-def get_title_display(context):
+def get_meta_title(context):
     title = settings.SITE_TITLE
 
     page = context.get('page')
@@ -79,17 +80,30 @@ def get_title_display(context):
 
 
 @jinja2.contextfunction
-def get_description_display(context):
+def get_meta_description(context):
     description = ''
 
     page = context.get('page')
     if page:
-        if page.search_description:
-            description = page.search_description
-        elif getattr(page, 'subtitle'):
+        if getattr(page, 'subtitle'):
             description = page.subtitle
 
     return description
+
+
+@jinja2.contextfunction
+def get_meta_image(context):
+    image = staticfiles_storage.url('base/images/default_bg.jpg')
+
+    page = context.get('page')
+    if page and page.share_image:
+        image = page.share_image.get_rendition('width-1024').url
+
+    request = context.get('request')
+    if request:
+        image = request.build_absolute_uri(image)
+
+    return image
 
 
 @jinja2.contextfunction

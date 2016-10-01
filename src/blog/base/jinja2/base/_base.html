@@ -4,17 +4,17 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="{% block document_description %}{{ get_description_display() }}{% endblock %}">
+        <meta name="description" content="{% block document_description %}{{ get_meta_description() }}{% endblock %}">
         <meta name="author" content="{% block document_author %}{{ _("Mikalai Radchuk") }}{% endblock %}">
 
-        <title>{% block document_title %}{{ get_title_display() }}{% endblock %}</title>
+        <title>{% block document_title %}{{ get_meta_title() }}{% endblock %}</title>
 
         {% if settings.FACEBOOK_APP_ID -%}
             <meta property="fb:app_id" content="{{ settings.FACEBOOK_APP_ID }}">
         {%- endif %}
-        <meta property="og:title" content="{{ get_title_display() }}">
-        <meta property="og:description" content="{{ get_description_display() }}">
-        <meta property="og:image" content="{{ get_image_display() }}">
+        <meta property="og:title" content="{{ get_meta_title() }}">
+        <meta property="og:description" content="{{ get_meta_description() }}">
+        <meta property="og:image" content="{{ get_meta_image() }}">
         {% if page -%}
             <meta property="og:url" content="{{ page.full_url }}">
         {%- endif %}
