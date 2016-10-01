@@ -1,5 +1,5 @@
 Django>=1.10,<1.11
-wagtail>=1.6.2,<1.7
+wagtail>=1.6.3,<1.7
 psycopg2>=2.6,<2.7
 Pillow>=3.3,<3.4
 Jinja2==2.8
