@@ -25,6 +25,13 @@ class BlogIndexPage(Page):
     def can_create_at(cls, parent):
         return super().can_create_at(parent) and not cls.objects.count()
 
+    def get_sitemap_urls(self):
+        """
+        Exclude blog index page from a sitemap,
+        because this page just redirects to the parent page.
+        """
+        return []
+
     def serve(self, request, *args, **kwargs):
         parent = self.get_parent()
 
