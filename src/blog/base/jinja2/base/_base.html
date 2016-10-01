@@ -9,6 +9,13 @@
 
         <title>{% block document_title %}{{ get_meta_title() }}{% endblock %}</title>
 
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:site" content="@{{ settings.TWITTER_USERNAME }}">
+        <meta name="twitter:creator" content="@{{ settings.TWITTER_USERNAME }}">
+        <meta name="twitter:title" content="{{ get_meta_title() }}">
+        <meta name="twitter:description" content="{{ get_meta_description() }}">
+        <meta name="twitter:image:src" content="{{ get_meta_image() }}" />
+
         {% if settings.FACEBOOK_APP_ID -%}
             <meta property="fb:app_id" content="{{ settings.FACEBOOK_APP_ID }}">
         {%- endif %}

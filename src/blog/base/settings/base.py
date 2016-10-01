@@ -235,10 +235,13 @@ LOGGING = {
 
 SITE_TITLE = 'mikola.by'
 
+TWITTER_USERNAME = 'm1kola'
+
 SOCIAL_MEDIA_URLS = {
     'github': 'https://github.com/m1kola',
     'facebook': 'https://www.facebook.com/m1kola',
-    'linkedin': 'https://www.linkedin.com/in/m1kola'
+    'linkedin': 'https://www.linkedin.com/in/m1kola',
+    'twitter': 'https://twitter.com/%s' % TWITTER_USERNAME,
 }
 
 COPYRIGHT_YEAR = 2015
