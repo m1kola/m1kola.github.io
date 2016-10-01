@@ -9,8 +9,6 @@ services:
       - blog.dev.env
     volumes:
       - "./src:/app"
-    volumes:
-      - "blog_app_data:/var/blog"
     links:
       - blog_postgres:postgres
     depends_on:
@@ -29,8 +27,6 @@ services:
     volumes:
       - "./src:/app"
       - "/app/node_modules"
-    volumes:
-      - "blog_app_data:/var/blog"
     depends_on:
       - blog_app
     command: "npm run watch"
@@ -45,5 +41,4 @@ services:
 
 
 volumes:
-  blog_app_data: {}
   blog_postgres_data: {}
