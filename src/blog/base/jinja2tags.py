@@ -66,10 +66,10 @@ def google_tag_manager(context):
 
 
 @jinja2.contextfunction
-def get_title_display(context, page=None):
+def get_title_display(context):
     title = settings.SITE_TITLE
 
-    page = page or context.get('page')
+    page = context.get('page')
     if page:
         title = page.title
         if page.seo_title:
@@ -79,10 +79,10 @@ def get_title_display(context, page=None):
 
 
 @jinja2.contextfunction
-def get_description_display(context, page=None):
+def get_description_display(context):
     description = ''
 
-    page = page or context.get('page')
+    page = context.get('page')
     if page:
         if page.search_description:
             description = page.search_description
