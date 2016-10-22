@@ -170,6 +170,8 @@ MEDIA_ROOT = cfg_env.get('MEDIA_ROOT', os.path.join(BASE_DIR, 'media'))
 
 WAGTAIL_SITE_NAME = 'mikola.by'
 
+WAGTAIL_ENABLE_UPDATE_CHECK = False
+
 TAGGIT_CASE_INSENSITIVE = True
 
 if 'WAGTAILSEARCH_BACKENDS_DEFAULT_URLS' in cfg_env:
