@@ -7,8 +7,8 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wagtailcore', '__latest__'),
-        ('wagtailimages', '__latest__'),
+        ('wagtailcore', '0029_unicode_slugfield_dj19'),
+        ('wagtailimages', '0013_make_rendition_upload_callable'),
     ]
 
     operations = [
