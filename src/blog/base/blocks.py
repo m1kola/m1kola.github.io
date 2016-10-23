@@ -30,15 +30,21 @@ class CodeBlock(blocks.StructBlock):
 
     class Meta:
         icon = 'code'
+        template = 'base/blocks/code_block.html'
 
-    def render(self, value, context=None):
+    def get_context(self, value):
         src = value.get('code', '').strip('\n')
         lang = value.get('language') or self.DEFAULT_LANG
 
         lexer = get_lexer_by_name(lang)
         formatter = get_formatter_by_name('html', linenos=None, noclasses=False)
 
-        return mark_safe(highlight(src, lexer, formatter))
+        context = super().get_context(value)
+        context.update({
+            'highlighted_value': mark_safe(highlight(src, lexer, formatter)),
+        })
+
+        return context
 
 
 class StoryBlock(blocks.StreamBlock):
