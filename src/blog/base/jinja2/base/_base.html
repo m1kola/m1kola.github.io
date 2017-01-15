@@ -28,6 +28,7 @@
         <meta property="og:site_name" content="mikola.by">
         <meta property="og:type" content="website">
 
+        <link title="{{ _("Mikalai Radchuk - Tech Blog") }}" type="application/atom+xml" rel="alternate" href="{{ url('blog:feed') }}">
         {% if page -%}
             <link rel="canonical" href="{{ page.full_url }}">
         {%- endif %}
