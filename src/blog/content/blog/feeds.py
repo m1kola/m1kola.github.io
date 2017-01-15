@@ -11,10 +11,9 @@ from .models import BlogPage
 class BlogFeed(Feed):
     title = settings.SITE_TITLE
     link = '/'
-    # description = 'The latest news and views from Torchbox on the work we do, the web and the wider world'
 
     def items(self):
-        return BlogPage.objects.live().order_by('-first_published_at')[:20]
+        return BlogPage.objects.live().public().order_by('-first_published_at')[:20]
 
     def item_title(self, item):
         return item.title
