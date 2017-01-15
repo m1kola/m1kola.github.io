@@ -6,6 +6,7 @@ from wagtail.utils.pagination import paginate
 from wagtail.wagtailcore.models import Page
 
 from blog.base.models import BaseFields
+from blog.base.utils import exclude_invisible_pages
 from blog.content.blog.models import BlogPage
 
 
@@ -26,7 +27,7 @@ class HomePage(Page, BaseFields):
         return blogs
 
     def get_context(self, request, *args, **kwargs):
-        blog_pages = self.blog_pages
+        blog_pages = exclude_invisible_pages(request, self.blog_pages)
 
         all_tags = None
         if getattr(settings, 'ENABLE_FILTERING_BY_TAG', True):
