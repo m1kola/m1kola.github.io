@@ -32,14 +32,14 @@ class CodeBlock(blocks.StructBlock):
         icon = 'code'
         template = 'base/blocks/code_block.html'
 
-    def get_context(self, value):
+    def get_context(self, value, parent_context=None):
         src = value.get('code', '').strip('\n')
         lang = value.get('language') or self.DEFAULT_LANG
 
         lexer = get_lexer_by_name(lang)
         formatter = get_formatter_by_name('html', linenos=None, noclasses=False)
 
-        context = super().get_context(value)
+        context = super().get_context(value, parent_context)
         context.update({
             'highlighted_value': mark_safe(highlight(src, lexer, formatter)),
         })
