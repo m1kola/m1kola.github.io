@@ -13,7 +13,11 @@ RUN pip install -r requirements/requirements.txt
 
 
 ADD src/ .
-RUN python manage.py compilemessages -v 3
+
+# We need to include compiled messages into a Docker image.
+# SECRET_KEY is actually not so important for compilemessages,
+# but Django now requires this to run compilemessages.
+RUN CFG_SECRET_KEY=fake_build_key python manage.py compilemessages -v 3
 
 CMD uwsgi --module=wsgi \
           --processes=10 \
