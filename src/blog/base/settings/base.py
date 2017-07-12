@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'wagtail.wagtailsnippets',
     'wagtail.wagtaildocs',
     'wagtail.wagtailimages',
-    'wagtail.wagtailsearch',
     'wagtail.wagtailadmin',
     'wagtail.wagtailcore',
     'wagtail.contrib.wagtailsitemaps',
@@ -173,15 +172,6 @@ WAGTAIL_SITE_NAME = 'mikola.by'
 WAGTAIL_ENABLE_UPDATE_CHECK = False
 
 TAGGIT_CASE_INSENSITIVE = True
-
-if 'WAGTAILSEARCH_BACKENDS_DEFAULT_URLS' in cfg_env:
-    WAGTAILSEARCH_BACKENDS = {
-        'default': {
-            'BACKEND': 'wagtail.wagtailsearch.backends.elasticsearch',
-            'URLS': cfg_env['WAGTAILSEARCH_BACKENDS_DEFAULT_URLS'].split(','),
-            'INDEX': cfg_env.get('WAGTAILSEARCH_BACKENDS_DEFAULT_INDEX', 'blog_app'),
-        }
-    }
 
 
 # Logging
