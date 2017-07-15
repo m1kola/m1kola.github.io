@@ -29,21 +29,6 @@ services:
       - blog_postgres
 
 
-  # Nginx. Serves static and media files from the application's data container.
-  # Note: allows to run only this app. Production only, at the moment.
-  blog_nginx:
-    build: ./nginx
-    restart: always
-    networks:
-      - backend
-    ports:
-      - "80:80"
-    volumes:
-      - "blog_app_data:/var/blog"
-    links:
-      - blog_app
-
-
   # DB container
   blog_postgres:
     image: postgres:9.5
