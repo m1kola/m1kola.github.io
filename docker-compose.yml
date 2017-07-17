@@ -5,6 +5,7 @@ services:
     extends:
       file: docker-compose.common.yml
       service: blog_app
+    restart: always
     env_file:
       # You need to have this file to be able to work with docker
       - ~/.docker/secrets/blog.prod.env
@@ -48,6 +49,7 @@ services:
   # Note: allows to run only this app. Production only, at the moment.
   blog_nginx:
     build: ./nginx
+    restart: always
     ports:
       - "80:80"
     volumes:
@@ -60,6 +62,7 @@ services:
     extends:
       file: docker-compose.common.yml
       service: blog_postgres
+    restart: always
     volumes:
       - "blog_postgres_data:/var/lib/postgresql/data"
 
