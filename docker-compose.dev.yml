@@ -1,9 +1,20 @@
 version: '2'
 
+
+volumes:
+  blog_postgres_data: {}
+
+
+networks:
+  backend: {}
+
+
 services:
   # The blog application
   blog_app:
     build: .
+    networks:
+      - backend
     env_file:
       - blog.dev.env
     volumes:
@@ -31,9 +42,7 @@ services:
   # DB container
   blog_postgres:
     image: postgres:9.5
+    networks:
+      - backend
     volumes:
       - "blog_postgres_data:/var/lib/postgresql/data"
-
-
-volumes:
-  blog_postgres_data: {}
