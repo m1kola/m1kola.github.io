@@ -31,9 +31,9 @@ App.prototype.scssSourcePaths = function() {
 };
 
 var app_options = {};
-if (process.env.CFG_STATIC_ROOT) {
+if (process.env.CFG_STATIC_COMPILED_DIR) {
     app_options = {
-        destDir: process.env.CFG_STATIC_ROOT
+        destDir: process.env.CFG_STATIC_COMPILED_DIR
     };
 }
 

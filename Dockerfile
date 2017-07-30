@@ -3,12 +3,14 @@ FROM node:6.5 AS assets
 
 WORKDIR /app
 
+# Install node packages. Done in a separate step so Docker can cache it.
 ADD src/package.json .
 RUN npm install
 
 # Configure gulp to build static assets to this dir
-ENV CFG_STATIC_ROOT /app/static_compiled
+ENV CFG_STATIC_COMPILED_DIR /app/static_compiled
 
+# Add sources, so we would be able to compile static.
 ADD src/ .
 RUN npm run build
 
@@ -24,10 +26,15 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
+# Install python packages. Done in a separate step so Docker can cache it.
 ADD src/requirements/requirements.txt ./requirements/requirements.txt
 RUN pip install -r requirements/requirements.txt
 
+# Add a script to run the application.
+ADD bin/run.sh /run.sh
+CMD ["/run.sh"]
 
+# Add sources, so we would be able to run the application.
 ADD src/ .
 
 # Copy static assets from the previous stage
@@ -39,12 +46,5 @@ COPY --from=assets /app/static_compiled /app/static_compiled
 RUN CFG_SECRET_KEY=fake python manage.py compilemessages -v 3
 RUN CFG_SECRET_KEY=fake python manage.py collectstatic --noinput
 
-CMD uwsgi --module=wsgi \
-          --processes=10 \
-          --http=:8080 \
-          --harakiri=20 \
-          --max-requests=5000 \
-          --master \
-          --vacuum
 
 EXPOSE 8080

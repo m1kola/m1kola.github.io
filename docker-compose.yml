@@ -17,23 +17,6 @@ services:
       - blog_postgres
 
 
-  # Runs migrations for the app. Production only, at the moment.
-  blog_app_update:
-    build: .
-    # Restart until postgres can process our requests.
-    # Should help on the first run and on restarts
-    restart: on-failure:10
-    command: "bash scripts/update-script.sh"
-    env_file:
-      # You need to have this file to be able to work with docker
-      - ~/.docker/secrets/blog.prod.env
-      - ./blog.prod.env
-    links:
-      - blog_postgres:postgres
-    depends_on:
-      - blog_postgres
-
-
   # Nginx. Serves static and media files from the application's data container.
   # Note: allows to run only this app. Production only, at the moment.
   blog_nginx:
