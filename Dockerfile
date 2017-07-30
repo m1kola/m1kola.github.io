@@ -18,10 +18,15 @@ RUN npm run build
 # Build back-end
 FROM python:3.6-slim
 
+# Install non-python dependencies
 RUN apt-get update && apt-get install -y \
-    postgresql-client libpq-dev \
-    gcc gettext \
+    gcc postgresql-client libpq-dev \
+    # Django needs gettext to be able to work with translations
+    gettext \
+    # Wagtail needs libjpeg to be able to work with images
     libjpeg62-turbo-dev \
+    # uWSGI needs mime-support to serve static files
+    # with the correct content-type header
     mime-support \
 	--no-install-recommends && rm -rf /var/lib/apt/lists/*
 
