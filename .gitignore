@@ -6,6 +6,7 @@ src/node_modules
 src/logs
 src/media
 src/blog/base/settings/local.py
+src/static_compiled
 src/**/static
 
 # IDEs
@@ -29,8 +30,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
-lib64/
 parts/
 sdist/
 var/

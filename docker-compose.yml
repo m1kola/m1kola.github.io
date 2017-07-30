@@ -1,14 +1,14 @@
 version: '2'
 
 services:
+  # The blog application
   blog_app:
-    extends:
-      file: docker-compose.common.yml
-      service: blog_app
+    build: .
     restart: always
     env_file:
       # You need to have this file to be able to work with docker
       - ~/.docker/secrets/blog.prod.env
+      - ./blog.prod.env
     volumes:
       - "blog_app_data:/var/blog"
     links:
@@ -19,9 +19,7 @@ services:
 
   # Runs migrations for the app. Production only, at the moment.
   blog_app_update:
-    extends:
-      file: docker-compose.common.yml
-      service: blog_app
+    build: .
     # Restart until postgres can process our requests.
     # Should help on the first run and on restarts
     restart: on-failure:10
@@ -29,20 +27,11 @@ services:
     env_file:
       # You need to have this file to be able to work with docker
       - ~/.docker/secrets/blog.prod.env
-    volumes:
-      - "blog_app_data:/var/blog"
+      - ./blog.prod.env
     links:
       - blog_postgres:postgres
     depends_on:
       - blog_postgres
-
-
-  blog_app_frontend:
-    extends:
-      file: docker-compose.common.yml
-      service: blog_app_frontend
-    volumes:
-      - "blog_app_data:/var/blog"
 
 
   # Nginx. Serves static and media files from the application's data container.
@@ -58,10 +47,9 @@ services:
       - blog_app
 
 
+  # DB container
   blog_postgres:
-    extends:
-      file: docker-compose.common.yml
-      service: blog_postgres
+    image: postgres:9.5
     restart: always
     volumes:
       - "blog_postgres_data:/var/lib/postgresql/data"

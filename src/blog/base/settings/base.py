@@ -158,6 +158,10 @@ LOCALE_PATHS = (
 
 # Static files (CSS, JavaScript, Images) and media files (uploaded content)
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static_compiled')
+]
+
 STATIC_URL = '/static/'
 STATIC_ROOT = cfg_env.get('STATIC_ROOT', os.path.join(BASE_DIR, 'static'))
 

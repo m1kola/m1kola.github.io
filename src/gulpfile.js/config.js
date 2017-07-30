@@ -5,7 +5,10 @@ var App = function(dir, options) {
     this.options = options || {};
 
     this.srcDir = 'static_src';
-    this.destDir = this.options.destDir || 'static';
+    this.destDir = this.options.destDir || path.resolve('.', 'static_compiled');
+    if (!path.isAbsolute(this.destDir)) {
+        this.destDir = path.resolve('.', this.dir, this.destDir);
+    }
 
     this.appName = this.options.appName || path.basename(dir);
     this.sourceFiles = path.join('.', this.dir, this.srcDir);
@@ -14,12 +17,7 @@ App.prototype = Object.create(null);
 App.prototype.processDestFile = function(file) {
     var srcDir = path.resolve(this.sourceFiles);
 
-    var destDir = this.destDir;
-    if (!path.isAbsolute(destDir)) {
-        destDir = path.resolve('.', this.dir, destDir)
-    }
-
-    return file.base.replace(srcDir, destDir)
+    return file.base.replace(srcDir, this.destDir);
 };
 App.prototype.scssIncludePaths = function() {
     return [this.sourceFiles];

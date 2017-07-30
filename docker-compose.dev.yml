@@ -1,10 +1,9 @@
 version: '2'
 
 services:
+  # The blog application
   blog_app:
-    extends:
-      file: docker-compose.common.yml
-      service: blog_app
+    build: .
     env_file:
       - blog.dev.env
     volumes:
@@ -19,9 +18,7 @@ services:
 
 
   blog_app_frontend:
-    extends:
-      file: docker-compose.common.yml
-      service: blog_app_frontend
+    image: node:6.5
     env_file:
       - blog.dev.env
     volumes:
@@ -29,13 +26,15 @@ services:
       - "/app/node_modules"
     depends_on:
       - blog_app
-    command: "npm run watch"
+    command:
+      - cd /app
+      - npm install
+      - npm run watch
 
 
+  # DB container
   blog_postgres:
-    extends:
-      file: docker-compose.common.yml
-      service: blog_postgres
+    image: postgres:9.5
     volumes:
       - "blog_postgres_data:/var/lib/postgresql/data"
 
