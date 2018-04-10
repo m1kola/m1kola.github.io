@@ -20,7 +20,7 @@ FROM python:3.6-slim
 
 # Install non-python dependencies
 RUN apt-get update && apt-get install -y \
-    gcc postgresql-client libpq-dev \
+    gcc libpq-dev \
     # Django needs gettext to be able to work with translations
     gettext \
     # Wagtail needs libjpeg to be able to work with images
@@ -28,7 +28,7 @@ RUN apt-get update && apt-get install -y \
     # uWSGI needs mime-support to serve static files
     # with the correct content-type header
     mime-support \
-	--no-install-recommends && rm -rf /var/lib/apt/lists/*
+	  --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
