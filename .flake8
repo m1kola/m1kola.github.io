@@ -1,0 +1,4 @@
+[flake8]
+ignore = E501,F405
+exclude = */migrations/*,node_modules/,blog/base/settings/local.py
+

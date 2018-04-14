@@ -38,7 +38,8 @@ RUN pip install -r requirements/requirements.txt
 
 # Copy a script to run the application.
 COPY bin/run.sh /run.sh
-CMD ["/run.sh"]
+ENTRYPOINT ["/run.sh"]
+CMD ["uwsgi", "--ini", "uwsgi.ini"]
 
 # Copy sources, so we would be able to run the application.
 COPY src/ .
@@ -51,6 +52,3 @@ COPY --from=assets /app/static_compiled /app/static_compiled
 # but Django now requires this to run these commands.
 RUN CFG_SECRET_KEY=fake python manage.py compilemessages -v 3
 RUN CFG_SECRET_KEY=fake python manage.py collectstatic --noinput
-
-
-EXPOSE 8080

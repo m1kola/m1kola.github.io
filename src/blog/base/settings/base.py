@@ -1,5 +1,12 @@
 import os
 from datetime import datetime
+import dj_database_url
+
+
+# We can't use gettext_noop from django.utils.translation here, because
+# it will trigger config validation and ImproperlyConfigured as a result
+def gettext_noop(s):
+    return s
 
 
 # Get CFG_* vars from the environment
@@ -7,9 +14,6 @@ cfg_env = {}
 for key, value in os.environ.items():
     if key.startswith('CFG_'):
         cfg_env[key[4:]] = value
-
-
-gettext_noop = lambda s: s
 
 
 BASE_DIR = os.path.abspath(
@@ -122,14 +126,9 @@ WSGI_APPLICATION = 'wsgi.application'
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': cfg_env.get('BLOG_DATABASES_DEFAULT_NAME', 'postgres'),
-        'USER': cfg_env.get('BLOG_DATABASES_DEFAULT_USER', 'postgres'),
-        'PASSWORD': cfg_env.get('BLOG_DATABASES_DEFAULT_PASSWORD', 'postgres'),
-        'HOST': cfg_env.get('BLOG_DATABASES_DEFAULT_HOST', 'postgres'),
-        'PORT': cfg_env.get('BLOG_DATABASES_DEFAULT_PORT', '5432'),
-    }
+    'default': dj_database_url.config(
+        default='postgres://postgres:postgres@postgres/postgres'
+    ),
 }
 
 

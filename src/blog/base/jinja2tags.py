@@ -121,5 +121,6 @@ def get_image_display(context, page=None):
 
     return image
 
+
 # Nicer import name
 core = ProjectCoreExtension
