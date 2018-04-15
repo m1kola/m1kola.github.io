@@ -1,6 +1,6 @@
 Django>=1.11.12,<2.0
 wagtail>=1.11.1,<1.12
-psycopg2-binary>=2.7.4,<2.8
+psycopg2>=2.7.4,<2.8 --no-binary psycopg2
 Jinja2==2.8
 uwsgi==2.0.17
 pygments==2.1.3
