@@ -4,6 +4,10 @@ module.exports = {
     author: 'Mikalai Radchuk',
     description: 'Tech Blog',
     siteUrl: 'https://mikola.by',
+    socialMedia: {
+      fbAppId: "1744263672501697",
+      twitter: "@m1kola",
+    }
   },
   plugins: [
     {
@@ -11,6 +15,13 @@ module.exports = {
       options: {
         path: `${__dirname}/src/pages`,
         name: 'pages',
+      },
+    },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        path: `${__dirname}/src/media`,
+        name: 'media',
       },
     },
     {
@@ -51,6 +62,12 @@ module.exports = {
       resolve: 'gatsby-plugin-typography',
       options: {
         pathToConfigModule: 'src/utils/typography',
+      },
+    },
+    {
+      resolve: 'gatsby-plugin-canonical-urls',
+      options: {
+        siteUrl: 'https://mikola.by',
       },
     },
   ],

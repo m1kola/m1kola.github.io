@@ -72,6 +72,18 @@ class Template extends React.Component {
           defaultTitle={data.site.siteMetadata.title}
           titleTemplate={'%s | ' + data.site.siteMetadata.title}
         >
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:site" content={data.site.siteMetadata.socialMedia.twitter} />
+          <meta name="twitter:creator" content={data.site.siteMetadata.socialMedia.twitter} />
+          <meta name="twitter:title" content={data.site.siteMetadata.title} />
+          <meta name="twitter:description" content={data.site.siteMetadata.description} />
+
+          <meta property="fb:app_id" content={data.site.siteMetadata.socialMedia.fbAppId} />
+          <meta property="og:title" content={data.site.siteMetadata.title} />
+          <meta property="og:description" content={data.site.siteMetadata.description} />
+          <meta property="og:url" content={location.pathname} />
+          <meta property="og:type" content="website" />
+
           <meta name="description" content={data.site.siteMetadata.description} />
           <meta name="author" content={data.site.siteMetadata.author} />
         </Helmet>
@@ -91,6 +103,10 @@ export const query = graphql`
         title
         author
         description
+        socialMedia {
+          fbAppId
+          twitter
+        }
       }
     }
   }

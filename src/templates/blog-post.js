@@ -10,14 +10,25 @@ class BlogPostTemplate extends React.Component {
     const post = this.props.data.markdownRemark
     const { previous, next } = this.props.pathContext
 
+    const meta = [
+      {property: 'og:title', content: post.frontmatter.title},
+      {name: 'twitter:title', content: post.frontmatter.title},
+    ]
+    if (post.frontmatter.subtitle) {
+      meta.push({name: 'description', content: post.frontmatter.subtitle})
+      meta.push({name: 'twitter:description', content: post.frontmatter.subtitle})
+      meta.push({property: 'og:description', content: post.frontmatter.subtitle})
+    }
+    if (post.frontmatter.shareImage) {
+      meta.push({property: 'twitter:image', content: post.frontmatter.shareImage.childImageSharp.resize.src})
+      meta.push({property: 'og:image', content: post.frontmatter.shareImage.childImageSharp.resize.src})
+      meta.push({property: 'og:image:width', content: post.frontmatter.shareImage.childImageSharp.resize.width})
+      meta.push({property: 'og:image:height', content: post.frontmatter.shareImage.childImageSharp.resize.height})
+    }
+
     return (
       <div>
-        <Helmet title={post.frontmatter.title}>
-          {
-            post.frontmatter.subtitle &&
-            <meta name="description" content={post.frontmatter.subtitle} />
-          }
-        </Helmet>
+        <Helmet title={post.frontmatter.title} meta={meta} />
         <p
           style={{
             ...scale(-1 / 5),
@@ -92,6 +103,15 @@ export const pageQuery = graphql`
         title
         subtitle
         date(formatString: "ll")
+        shareImage {
+          childImageSharp {
+            resize(width: 800) {
+              width
+              height
+              src
+            }
+          }
+        }
       }
     }
   }

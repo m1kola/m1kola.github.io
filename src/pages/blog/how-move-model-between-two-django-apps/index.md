@@ -3,6 +3,7 @@ title: How to move a model between two Django apps
 subtitle: And save references with content types and other entries
 lead: Moving a model between two Django apps isn't a trivial task, at the moment of writing (actual for Django 1.10 and the earlier versions). It becomes more difficult, if you need to keep references with content types or other entries.
 date: "2016-09-25"
+shareImage: "./../../../media/images/django-logo-negative.png"
 ---
 
 ### Warning
