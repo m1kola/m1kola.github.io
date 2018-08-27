@@ -2,10 +2,9 @@ module.exports = {
   siteMetadata: {
     title: 'Mikalai Radchuk',
     author: 'Mikalai Radchuk',
-    description: 'A starter blog demonstrating what Gatsby can do.',
-    siteUrl: 'https://gatsbyjs.github.io/gatsby-starter-blog/',
+    description: 'Tech Blog',
+    siteUrl: 'https://mikola.by',
   },
-  pathPrefix: '/gatsby-starter-blog',
   plugins: [
     {
       resolve: `gatsby-source-filesystem`,
