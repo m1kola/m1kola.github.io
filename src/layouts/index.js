@@ -6,7 +6,7 @@ import { rhythm, scale } from '../utils/typography'
 
 class Template extends React.Component {
   render() {
-    const { location, children } = this.props
+    const { location, children, data } = this.props
     let header
 
     let rootPath = `/`
@@ -31,7 +31,7 @@ class Template extends React.Component {
             }}
             to={'/'}
           >
-            Mikalai Radchuk
+            {data.site.siteMetadata.title}
           </Link>
         </h1>
       )
@@ -52,7 +52,7 @@ class Template extends React.Component {
             }}
             to={'/'}
           >
-            Mikalai Radchuk
+            {data.site.siteMetadata.title}
           </Link>
         </h3>
       )
@@ -74,3 +74,14 @@ class Template extends React.Component {
 }
 
 export default Template
+
+export const query = graphql`
+  query LayoutTemplate {
+    site {
+      siteMetadata {
+        title
+        author
+      }
+    }
+  }
+`
