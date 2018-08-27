@@ -1,5 +1,6 @@
 import React from 'react'
 import Link from 'gatsby-link'
+import Helmet from 'react-helmet'
 import _ from 'prismjs/themes/prism-solarizedlight.css'
 
 import { rhythm, scale } from '../utils/typography'
@@ -57,6 +58,7 @@ class Template extends React.Component {
         </h3>
       )
     }
+
     return (
       <div
         style={{
@@ -66,6 +68,13 @@ class Template extends React.Component {
           padding: `${rhythm(1.5)} ${rhythm(3 / 4)}`,
         }}
       >
+        <Helmet
+          defaultTitle={data.site.siteMetadata.title}
+          titleTemplate={'%s | ' + data.site.siteMetadata.title}
+        >
+          <meta name="description" content={data.site.siteMetadata.description} />
+          <meta name="author" content={data.site.siteMetadata.author} />
+        </Helmet>
         {header}
         {children()}
       </div>
@@ -81,6 +90,7 @@ export const query = graphql`
       siteMetadata {
         title
         author
+        description
       }
     }
   }
