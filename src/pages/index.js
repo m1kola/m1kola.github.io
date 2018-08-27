@@ -29,7 +29,7 @@ class BlogIndex extends React.Component {
                 </Link>
               </h3>
               <small>{node.frontmatter.date}</small>
-              <p dangerouslySetInnerHTML={{ __html: node.excerpt }} />
+              <p>{node.frontmatter.lead || node.excerpt}</p>
             </div>
           )
         })}
@@ -55,8 +55,9 @@ export const pageQuery = graphql`
             slug
           }
           frontmatter {
-            date(formatString: "DD MMMM, YYYY")
+            date(formatString: "ll")
             title
+            lead
           }
         }
       }

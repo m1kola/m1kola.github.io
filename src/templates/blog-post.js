@@ -15,17 +15,24 @@ class BlogPostTemplate extends React.Component {
     return (
       <div>
         <Helmet title={`${post.frontmatter.title} | ${siteTitle}`} />
-        <h1>{post.frontmatter.title}</h1>
         <p
           style={{
             ...scale(-1 / 5),
             display: 'block',
-            marginBottom: rhythm(1),
-            marginTop: rhythm(-0.5),
+            marginTop: rhythm(2),
+            marginBottom: rhythm(-1.5),
           }}
         >
           {post.frontmatter.date}
         </p>
+        <h1>{post.frontmatter.title}</h1>
+        <h2 style={{
+          ...scale(1 / 3),
+          marginTop: rhythm(0),
+        }}>
+          {post.frontmatter.subtitle}
+        </h2>
+
         <div dangerouslySetInnerHTML={{ __html: post.html }} />
         <hr
           style={{
@@ -80,7 +87,8 @@ export const pageQuery = graphql`
       html
       frontmatter {
         title
-        date(formatString: "MMMM DD, YYYY")
+        subtitle
+        date(formatString: "ll")
       }
     }
   }
