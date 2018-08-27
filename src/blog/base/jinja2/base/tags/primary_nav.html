@@ -1,9 +1,0 @@
-{% if menu_items %}
-    <ul class="nav navbar-nav navbar-right">
-        {% for menu_item in menu_items %}
-            <li>
-                <a href="{{ pageurl(menu_item) }}">{{ menu_item.title }}</a>
-            </li>
-        {% endfor %}
-    </ul>
-{% endif %}

@@ -1,9 +1,0 @@
-{% extends 'base/_base.html' %}
-{% import 'blog/macro/post.html' as post_macro %}
-
-{% block main_content %}
-    {{ post_macro.heading(page) }}
-    {{ post_macro.article(page) }}
-
-    <hr>
-{% endblock %}
