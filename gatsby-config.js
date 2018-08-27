@@ -40,9 +40,9 @@ module.exports = {
     `gatsby-transformer-sharp`,
     `gatsby-plugin-sharp`,
     {
-      resolve: `gatsby-plugin-google-analytics`,
+      resolve: `gatsby-plugin-google-tagmanager`,
       options: {
-        //trackingId: `ADD YOUR TRACKING ID HERE`,
+        id: `GTM-PVR4H5`,
       },
     },
     `gatsby-plugin-feed`,
