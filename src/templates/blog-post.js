@@ -20,8 +20,9 @@ class BlogPostTemplate extends React.Component {
       meta.push({property: 'og:description', content: post.frontmatter.subtitle})
     }
     if (post.frontmatter.shareImage) {
-      meta.push({property: 'twitter:image', content: post.frontmatter.shareImage.childImageSharp.resize.src})
-      meta.push({property: 'og:image', content: post.frontmatter.shareImage.childImageSharp.resize.src})
+      const imageURL = this.props.data.site.siteMetadata.siteUrl + post.frontmatter.shareImage.childImageSharp.resize.src;
+      meta.push({name: 'twitter:image', content: imageURL})
+      meta.push({property: 'og:image', content: imageURL})
       meta.push({property: 'og:image:width', content: post.frontmatter.shareImage.childImageSharp.resize.width})
       meta.push({property: 'og:image:height', content: post.frontmatter.shareImage.childImageSharp.resize.height})
     }
@@ -92,8 +93,7 @@ export const pageQuery = graphql`
   query BlogPostBySlug($slug: String!) {
     site {
       siteMetadata {
-        title
-        author
+        siteUrl
       }
     }
     markdownRemark(fields: { slug: { eq: $slug } }) {

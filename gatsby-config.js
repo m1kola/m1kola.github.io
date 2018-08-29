@@ -3,7 +3,7 @@ module.exports = {
     title: 'Mikalai Radchuk',
     author: 'Mikalai Radchuk',
     description: 'Tech Blog',
-    siteUrl: 'https://mikola.by',
+    siteUrl: process.env.NODE_ENV !== 'production' ? 'http://localhost:8000' : 'https://mikola.by',
     socialMedia: {
       fbAppId: "1744263672501697",
       twitter: "@m1kola",
