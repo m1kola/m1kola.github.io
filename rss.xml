@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Mikalai Radchuk]]></title><description><![CDATA[Tech Blog]]></description><link>https://mikola.by</link><generator>RSS for Node</generator><lastBuildDate>Wed, 29 Aug 2018 20:37:49 GMT</lastBuildDate><item><title><![CDATA[How to move a model between two Django apps]]></title><description><![CDATA[Warning Do not perform any operations on a production database, test everyting on a dump first. The wrong way If you have a Django app (I’ll…]]></description><link>https://mikola.by/blog/how-move-model-between-two-django-apps/</link><guid isPermaLink="false">https://mikola.by/blog/how-move-model-between-two-django-apps/</guid><pubDate>Sun, 25 Sep 2016 00:00:00 GMT</pubDate><content:encoded>&lt;h3&gt;Warning&lt;/h3&gt;
+&lt;p&gt;Do not perform any operations on a production database, test everyting on a dump first.&lt;/p&gt;
+&lt;h3&gt;The wrong way&lt;/h3&gt;
+&lt;p&gt;If you have a Django app (I’ll call it &lt;strong&gt;app1&lt;/strong&gt;, in my example) with a lot of models and if you want to move some of these models into a separate app (will be &lt;strong&gt;app2&lt;/strong&gt;) you can’t just cut a model definition from the &lt;strong&gt;app1&lt;/strong&gt;, paste it into a new application and then run the &lt;strong&gt;makemigrations&lt;/strong&gt; command. Django will simply remove your table and will create a new one. As a result of these operations, you’ll lose your data.&lt;/p&gt;
+&lt;h4&gt;Why does it happen?&lt;/h4&gt;
+&lt;p&gt;Whenever you run the &lt;strong&gt;makemigrations&lt;/strong&gt; command, Django applies all migrations internally to build a project state, then compares the state to the state presented in your code. All the differences will be written in new migration files.&lt;/p&gt;
+&lt;p&gt;Django manages migrations on a per-app basis and it “thinks” that one model has been removed from &lt;strong&gt;app1&lt;/strong&gt; and a new one has been added to &lt;strong&gt;app2&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;So your cut-and-paste operation will lead to the same result as the following operations:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Remove your model definition from &lt;strong&gt;app1&lt;/strong&gt;;&lt;/li&gt;
+&lt;li&gt;Run the &lt;strong&gt;makemigrations&lt;/strong&gt; command &lt;em&gt;(here Django will generate a migration that removes your data)&lt;/em&gt;;&lt;/li&gt;
+&lt;li&gt;Add your model definition to &lt;strong&gt;app2&lt;/strong&gt;;&lt;/li&gt;
+&lt;li&gt;Run the &lt;strong&gt;makemigrations&lt;/strong&gt; command again.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;The right way&lt;/h3&gt;
+&lt;p&gt;It will be easier to explain the solution with an example. In my &lt;strong&gt;app1&lt;/strong&gt; application I have the following &lt;strong&gt;models.py&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot;&gt;
+      &lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;from&lt;/span&gt; django&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;contrib&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;contenttypes&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;models &lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; ContentType
+&lt;span class=&quot;token keyword&quot;&gt;from&lt;/span&gt; django&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;db &lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; models
+
+
+&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;get_default_page_content_type&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; ContentType&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;objects&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;get_for_model&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;DefaultContentType&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+
+&lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;DefaultContentType&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;models&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;Model&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;pass&lt;/span&gt;
+
+
+&lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;ModelWithContentType&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;models&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;Model&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    content_type &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; models&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;ForeignKey&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;token string&quot;&gt;&apos;contenttypes.ContentType&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+        related_name&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;+&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+        on_delete&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;models&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;SET&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;get_default_page_content_type&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+
+&lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;RelatedModel&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;models&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;Model&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    relation &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; models&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;ForeignKey&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;token string&quot;&gt;&apos;app1.ModelThatShouldBeMoved&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+        related_name&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;relations&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+        on_delete&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;models&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;CASCADE
+    &lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+
+&lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;ModelThatShouldBeMoved&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;models&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;Model&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    title &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; models&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;CharField&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;max_length&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;255&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+&lt;p&gt;As you may notice from the names of models, I want to move the &lt;strong&gt;ModelThatShouldBeMoved&lt;/strong&gt; model into &lt;strong&gt;app2&lt;/strong&gt;. This model is related to the &lt;strong&gt;RelatedModel&lt;/strong&gt; model which will stay in &lt;strong&gt;app1.&lt;/strong&gt; Also we have an indirect reference (through the &lt;strong&gt;ModelWithContentType.content_type&lt;/strong&gt; field) from &lt;strong&gt;ModelWithContentType&lt;/strong&gt;. And we need to keep all these direct and indirect relations!&lt;/p&gt;
+&lt;p&gt;You can create a test data set using the following snippet (run &lt;strong&gt;python manage.py shell&lt;/strong&gt; and insert the code):&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot;&gt;
+      &lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;from&lt;/span&gt; django&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;contrib&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;contenttypes&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;models &lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; ContentType
+
+&lt;span class=&quot;token keyword&quot;&gt;from&lt;/span&gt; app1&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;models &lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; ModelWithContentType&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; ModelThatShouldBeMoved&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; RelatedModel
+
+&lt;span class=&quot;token comment&quot;&gt;# We need to keep the same content type id for ModelThatShouldBeMoved&lt;/span&gt;
+content_type &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; ContentType&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;objects&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;get_for_model&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;ModelThatShouldBeMoved&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+ModelWithContentType&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;objects&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;create&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;content_type&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;content_type&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# We need to keep relations with other objects&lt;/span&gt;
+test_entry &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; ModelThatShouldBeMoved&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;objects&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;create&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;title&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;Test entry&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+relation &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; RelatedModel&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;objects&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;create&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;relation&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;test_entry&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+&lt;p&gt;As a result, you will have the following entries in the database:&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot;&gt;
+      &lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;django_migration_test&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token comment&quot;&gt;# select * from app1_modelthatshouldbemoved;&lt;/span&gt;
+ &lt;span class=&quot;token function&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt;   title
+----+------------
+  1 &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; Test entry
+&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;1 row&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+django_migration_test&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token comment&quot;&gt;# select * from app1_relatedmodel;&lt;/span&gt;
+ &lt;span class=&quot;token function&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; relation_id
+----+-------------
+  1 &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt;           1
+&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;1 row&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+django_migration_test&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token comment&quot;&gt;# select * from app1_modelwithcontenttype;&lt;/span&gt;
+ &lt;span class=&quot;token function&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; content_type_id
+----+-----------------
+  1 &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt;               8
+&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;1 row&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+django_migration_test&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token comment&quot;&gt;# select * from django_content_type where app_label in (&apos;app1&apos;, &apos;app2&apos;);&lt;/span&gt;
+ &lt;span class=&quot;token function&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; app_label &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt;         model
+----+-----------+------------------------
+  7 &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; app1      &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; defaultcontenttype
+  8 &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; app1      &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; modelthatshouldbemoved
+  9 &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; app1      &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; relatedmodel
+ 10 &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; app1      &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; modelwithcontenttype
+&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;4 rows&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+&lt;h4&gt;TL;DR;&lt;/h4&gt;
+&lt;p&gt;If you are familiar with Django migrations, here is the list of steps to get the job done:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Create a migration in &lt;strong&gt;app1&lt;/strong&gt; which will rename a table in the database for &lt;strong&gt;ModelThatShouldBeMoved&lt;/strong&gt;. This migration should change only the database, not the project state;&lt;/li&gt;
+&lt;li&gt;Create a migration in &lt;strong&gt;app2&lt;/strong&gt; which will add a model to the state and will update content types in the database. I’ll also rename the &lt;strong&gt;ModelThatShouldBeMoved&lt;/strong&gt; model to &lt;strong&gt;ModelThatWasMoved&lt;/strong&gt; in my example;&lt;/li&gt;
+&lt;li&gt;Create migrations in &lt;strong&gt;all the apps&lt;/strong&gt; that have relations with the model that you want to move. Migrations should change relations in the state;&lt;/li&gt;
+&lt;li&gt;Create a migration that removes the &lt;strong&gt;ModelThatShouldBeMoved&lt;/strong&gt; model from the state;&lt;/li&gt;
+&lt;li&gt;Update your code.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Some migrations will use the &lt;a href=&quot;https://docs.djangoproject.com/en/1.10/ref/migration-operations/#separatedatabaseandstate&quot;&gt;SeparateDatabaseAndState&lt;/a&gt; operation&lt;strong&gt;.&lt;/strong&gt;&lt;/p&gt;
+&lt;h4&gt;Step 1&lt;/h4&gt;
+&lt;p&gt;First, I need to rename a table in the database for the &lt;strong&gt;ModelThatShouldBeMoved&lt;/strong&gt; model.&lt;/p&gt;
+&lt;p&gt;This step isn’t necessary, if you specified the &lt;a href=&quot;https://docs.djangoproject.com/en/1.10/ref/models/options/#db-table&quot;&gt;Meta.db_table&lt;/a&gt; attribute in your model before. By default, Django generates a table name using an app label and a model’s class name, with an underscore between them (&lt;a href=&quot;https://docs.djangoproject.com/en/1.10/ref/models/options/#table-names&quot;&gt;see the docs&lt;/a&gt; for details). If you don’t care about the table name, you can simply add the &lt;strong&gt;Meta.db_table&lt;/strong&gt; attribute to your model and generate a new migration automatically.&lt;/p&gt;
+&lt;p&gt;In my case I have a table with a name &lt;strong&gt;app1_modelthatshouldbemoved&lt;/strong&gt;. I want to rename the &lt;strong&gt;ModelThatShouldBeMoved&lt;/strong&gt; model to &lt;strong&gt;ModelThatWasMoved&lt;/strong&gt; and put it into the &lt;strong&gt;app2&lt;/strong&gt;, so I need the name to be &lt;strong&gt;app2_modelthatwasmoved&lt;/strong&gt; to match Django’s naming convention.&lt;/p&gt;
+&lt;p&gt;Here is the migration for my case (&lt;strong&gt;0002&lt;em&gt;rename&lt;/em&gt;table.py&lt;/strong&gt; in the &lt;strong&gt;app1&lt;/strong&gt; app):&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot;&gt;
+      &lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;from&lt;/span&gt; django&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;db &lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; migrations
+
+
+&lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Migration&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;migrations&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;Migration&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+
+    dependencies &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;
+        &lt;span class=&quot;token comment&quot;&gt;# This migration should depend on the previous migration in our app&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;app1&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;0001_initial&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+
+    operations &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;
+        migrations&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;AlterModelTable&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;name&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;ModelThatShouldBeMoved&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; table&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;app2_modelthatwasmoved&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+&lt;h4&gt;Step 2&lt;/h4&gt;
+&lt;p&gt;Now I need to add a migration that creates a model in the state for &lt;strong&gt;app2&lt;/strong&gt; and updates content types in the database.&lt;/p&gt;
+&lt;p&gt;I’ve called my migration &lt;strong&gt;0001&lt;em&gt;move&lt;/em&gt;a&lt;em&gt;model&lt;/em&gt;and_rename.py&lt;/strong&gt;, because it’s the first migration in my &lt;strong&gt;app2&lt;/strong&gt;. In your case it may be a migration with a different number. Also you will probably need to specify the previous migration in your app as a dependency.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot;&gt;
+      &lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;from&lt;/span&gt; __future__ &lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; unicode_literals
+
+&lt;span class=&quot;token keyword&quot;&gt;from&lt;/span&gt; django&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;db &lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; migrations&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; models
+
+
+&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;update_contentypes&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;apps&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; schema_editor&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token triple-quoted-string string&quot;&gt;&quot;&quot;&quot;
+    Updates content types.
+    We want to have the same content type id, when the model is moved and renamed.
+    &quot;&quot;&quot;&lt;/span&gt;
+    ContentType &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; apps&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;get_model&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;contenttypes&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;ContentType&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    db_alias &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; schema_editor&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;connection&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;alias
+
+    &lt;span class=&quot;token comment&quot;&gt;# Move the ModelThatShouldBeMoved model to app2 and rename to ModelThatWasMoved&lt;/span&gt;
+    qs &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; ContentType&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;objects&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;using&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;db_alias&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token builtin&quot;&gt;filter&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;app_label&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;app1&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; model&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;modelthatshouldbemoved&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    qs&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;update&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;app_label&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;app2&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; model&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;modelthatwasmoved&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+
+&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;update_contentypes_reverse&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;apps&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; schema_editor&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token triple-quoted-string string&quot;&gt;&quot;&quot;&quot;
+    Reverts changes in content types.
+    &quot;&quot;&quot;&lt;/span&gt;
+    ContentType &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; apps&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;get_model&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;contenttypes&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;ContentType&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    db_alias &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; schema_editor&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;connection&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;alias
+
+    &lt;span class=&quot;token comment&quot;&gt;# Move the ModelThatWasMoved model to app1 and rename to ModelThatShouldBeMoved&lt;/span&gt;
+    qs &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; ContentType&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;objects&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;using&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;db_alias&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token builtin&quot;&gt;filter&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;app_label&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;app2&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; model&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;modelthatwasmoved&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    qs&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;update&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;app_label&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;app1&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; model&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;modelthatshouldbemoved&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+
+&lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Migration&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;migrations&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;Migration&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+
+    dependencies &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;
+        &lt;span class=&quot;token comment&quot;&gt;# We need to run 0002_rename_table form app1 first,&lt;/span&gt;
+        &lt;span class=&quot;token comment&quot;&gt;# because it changes the table of ModelThatShouldBeMoved.&lt;/span&gt;
+        &lt;span class=&quot;token comment&quot;&gt;# Only after that we will update content types and rename the model.&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;app1&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;0002_rename_table&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;token comment&quot;&gt;# This migration also depends on the contenttype app,&lt;/span&gt;
+        &lt;span class=&quot;token comment&quot;&gt;# so we need to specify dependency on 0002_remove_content_type_name.&lt;/span&gt;
+        &lt;span class=&quot;token comment&quot;&gt;# If you use Django &amp;lt; 1.8, you will probably need to specify 0001_initial.&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;contenttypes&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;0002_remove_content_type_name&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+
+    state_operations &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;
+        migrations&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;CreateModel&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+            name&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;ModelThatShouldBeMoved&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+            fields&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;
+                &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;id&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; models&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;AutoField&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;auto_created&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token boolean&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; primary_key&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token boolean&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; serialize&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token boolean&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; verbose_name&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;ID&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+                &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;title&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; models&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;CharField&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;max_length&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;255&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+            &lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+        migrations&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;RenameModel&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+            old_name&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;ModelThatShouldBeMoved&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+            new_name&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;ModelThatWasMoved&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+
+    database_operations &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;
+        migrations&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;RunPython&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;update_contentypes&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; update_contentypes_reverse&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+
+    operations &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;
+        migrations&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;SeparateDatabaseAndState&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+            state_operations&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;state_operations&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+            database_operations&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;database_operations
+        &lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+&lt;p&gt;Note that the &lt;strong&gt;CreateModel&lt;/strong&gt; operation should reflect your model definition. Otherwise you may lose your data.&lt;/p&gt;
+&lt;p&gt;As an alternative to the &lt;strong&gt;CreateModel&lt;/strong&gt; operation, you can copy and paste all the operations related to your model since the first migration (usually &lt;strong&gt;0001_initial&lt;/strong&gt;) in your application.&lt;/p&gt;
+&lt;p&gt;Note also that if you do not need to rename your model, you need to remove the &lt;strong&gt;RenameModel&lt;/strong&gt; operation and remove the &lt;strong&gt;model&lt;/strong&gt; argument from the &lt;strong&gt;update&lt;/strong&gt; calls in the &lt;strong&gt;update_contentypes&lt;/strong&gt; and &lt;strong&gt;update&lt;em&gt;contentypes&lt;/em&gt;reverse&lt;/strong&gt; functions.&lt;/p&gt;
+&lt;h4&gt;Step 3&lt;/h4&gt;
+&lt;p&gt;I need to create migrations for &lt;strong&gt;all the apps that have models which have relations with the model that I want to move&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;In my example, I have only one app that contains only one field which refers the old &lt;strong&gt;ModelThatShouldBeMoved&lt;/strong&gt; model. My migration (&lt;strong&gt;0003&lt;em&gt;update&lt;/em&gt;relations.py&lt;/strong&gt; in &lt;strong&gt;app1&lt;/strong&gt;):&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot;&gt;
+      &lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;from&lt;/span&gt; django&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;db &lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; migrations&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; models
+&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; django&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;db&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;models&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;deletion
+
+
+&lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Migration&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;migrations&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;Migration&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+
+    dependencies &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;
+        &lt;span class=&quot;token comment&quot;&gt;# The previous migration in app1&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;app1&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;0002_rename_table&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;token comment&quot;&gt;# This migration should depend on the migration that creates a model in the state of app2,&lt;/span&gt;
+        &lt;span class=&quot;token comment&quot;&gt;# because we are going to refer a new model here.&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;app2&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;0001_move_a_model_and_rename&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+
+    state_operations &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;
+        migrations&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;AlterField&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+            model_name&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;relatedmodel&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+            name&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;relation&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+            field&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;models&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;ForeignKey&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;on_delete&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;django&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;db&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;models&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;deletion&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;CASCADE&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; related_name&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;relations&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+                                    to&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;app2.ModelThatWasMoved&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+
+    operations &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;
+        migrations&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;SeparateDatabaseAndState&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;state_operations&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;state_operations&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+&lt;p&gt;Note that the &lt;strong&gt;AlterField&lt;/strong&gt; operation should contain the same field definition as your model. The only difference is reference to your model. So this definition:&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot;&gt;
+      &lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;models&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;ForeignKey&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;on_delete&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;django&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;db&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;models&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;deletion&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;CASCADE&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; related_name&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;relations&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+                                    to&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;app1.ModelThatShouldBeMoved&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+&lt;p&gt;should be replaced with this one, in my case:&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot;&gt;
+      &lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;models&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;ForeignKey&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;on_delete&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;django&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;db&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;models&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;deletion&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;CASCADE&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; related_name&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;relations&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+                                    to&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;app2.ModelThatWasMoved&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+&lt;h4&gt;Step 4&lt;/h4&gt;
+&lt;p&gt;The last migration simply removes the model from the state of &lt;strong&gt;app1&lt;/strong&gt; (&lt;strong&gt;0004&lt;em&gt;delete&lt;/em&gt;old&lt;em&gt;model&lt;/em&gt;from&lt;em&gt;the&lt;/em&gt;state.py&lt;/strong&gt;):&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot;&gt;
+      &lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;from&lt;/span&gt; __future__ &lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; unicode_literals
+
+&lt;span class=&quot;token keyword&quot;&gt;from&lt;/span&gt; django&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;db &lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; migrations
+
+
+&lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Migration&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;migrations&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;Migration&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+
+    dependencies &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;app1&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;0003_update_relations&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+
+    state_operations &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;
+        migrations&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;DeleteModel&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;ModelThatShouldBeMoved&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+
+    operations &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;
+        migrations&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;SeparateDatabaseAndState&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;state_operations&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;state_operations&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+&lt;h4&gt;Step 5&lt;/h4&gt;
+&lt;h4&gt;&lt;/h4&gt;
+&lt;p&gt;On the final step I just need to update my code:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Move the model definition into a new app (&lt;strong&gt;app2&lt;/strong&gt;, in my case);&lt;/li&gt;
+&lt;li&gt;Update imports;&lt;/li&gt;
+&lt;li&gt;Update relations (see the &lt;strong&gt;RelatedModel.relation&lt;/strong&gt; definition, for example).&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;My &lt;strong&gt;models.py&lt;/strong&gt; from &lt;strong&gt;app1&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot;&gt;
+      &lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;from&lt;/span&gt; django&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;contrib&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;contenttypes&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;models &lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; ContentType
+&lt;span class=&quot;token keyword&quot;&gt;from&lt;/span&gt; django&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;db &lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; models
+
+
+&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;get_default_page_content_type&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; ContentType&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;objects&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;get_for_model&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;DefaultContentType&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+
+&lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;DefaultContentType&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;models&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;Model&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;pass&lt;/span&gt;
+
+
+&lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;ModelWithContentType&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;models&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;Model&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    content_type &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; models&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;ForeignKey&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;token string&quot;&gt;&apos;contenttypes.ContentType&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+        related_name&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;+&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+        on_delete&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;models&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;SET&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;get_default_page_content_type&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+
+&lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;RelatedModel&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;models&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;Model&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    relation &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; models&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;ForeignKey&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;token string&quot;&gt;&apos;app2.ModelThatWasMoved&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+        related_name&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;relations&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+        on_delete&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;models&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;CASCADE
+    &lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+&lt;p&gt;And &lt;strong&gt;models.py&lt;/strong&gt; from &lt;strong&gt;app2&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot;&gt;
+      &lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;from&lt;/span&gt; django&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;db &lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; models
+
+
+&lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;ModelThatWasMoved&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;models&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;Model&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    title &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; models&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;CharField&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;max_length&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;255&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+&lt;h4&gt;Testing&lt;/h4&gt;
+&lt;p&gt;To test changes you can run the &lt;strong&gt;python **&lt;/strong&gt;manage.py makemigrations —dry-run** command. This command will try to generate migrations without actually writing them to a disk.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Expected result:&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot;&gt;
+      &lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;No changes detected&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+&lt;p&gt;You can also try to run the same SQL queries as shown before (but with a new table name):&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot;&gt;
+      &lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;django_migration_test&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token comment&quot;&gt;# select * from app2_modelthatwasmoved;&lt;/span&gt;
+ &lt;span class=&quot;token function&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt;   title
+----+------------
+  1 &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; Test entry
+&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;1 row&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+django_migration_test&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token comment&quot;&gt;# select * from app1_relatedmodel;&lt;/span&gt;
+ &lt;span class=&quot;token function&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; relation_id
+----+-------------
+  1 &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt;           1
+&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;1 row&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+django_migration_test&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token comment&quot;&gt;# select * from app1_modelwithcontenttype;&lt;/span&gt;
+ &lt;span class=&quot;token function&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; content_type_id
+----+-----------------
+  1 &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt;               8
+&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;1 row&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+django_migration_test&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token comment&quot;&gt;# select * from django_content_type where app_label in (&apos;app1&apos;, &apos;app2&apos;);&lt;/span&gt;
+ &lt;span class=&quot;token function&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; app_label &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt;        model
+----+-----------+----------------------
+  7 &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; app1      &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; defaultcontenttype
+  9 &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; app1      &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; relatedmodel
+ 10 &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; app1      &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; modelwithcontenttype
+  8 &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; app2      &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; modelthatwasmoved
+&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;4 rows&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Expected result:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Data should be the same as before except the &lt;strong&gt;django&lt;em&gt;content&lt;/em&gt;type&lt;/strong&gt; table. This table should contain a new &lt;strong&gt;app_label&lt;/strong&gt; and a new &lt;strong&gt;model&lt;/strong&gt; name, but the same id (see the entry with &lt;strong&gt;id=8&lt;/strong&gt;) for the model that has been moved.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[Hello, World!]]></title><description><![CDATA[
+It's my second attempt to write a blog. My previous blog was on m1kola.com which now just redirects to this domain. It was a personal blog, but it has become useless because of Facebook and other social media. There are some reasons why I have decided to create a new one.
+]]></description><link>https://mikola.by/blog/hello-world/</link><guid isPermaLink="false">https://mikola.by/blog/hello-world/</guid><pubDate>Mon, 05 Sep 2016 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;It’s my second attempt to write a blog. My previous blog was on m1kola.com which now just redirects to this domain. It was a personal blog, but it has become useless because of Facebook and other social media. There are some reasons why I have decided to create a new one.&lt;/p&gt;
+&lt;!-- more --&gt;
+&lt;p&gt;The first and the most important reason - I need more practice in English. I use English every day in chats with colleagues or on Github, but when I write fast I can’t concentrate on grammar or on vocabulary. It’s harder to remember new words when I work. So I will try to use the wider spectrum of words then at work.&lt;/p&gt;
+&lt;p&gt;The second reason - I need a place where I can put my technical notes. I have some bits of knowledge in &lt;a href=&quot;https://github.com/django/django&quot;&gt;Django&lt;/a&gt; and &lt;a href=&quot;https://github.com/wagtail/wagtail&quot;&gt;Wagtail CMS&lt;/a&gt; and want to share them with other developers. For example, in the nearest feature, I’m going to write a blog post about migrating a Django model from one app to another. It’s covered somewhere on StackOverflow, but it was hard to find.&lt;/p&gt;
+&lt;p&gt;And last, but not least - I need a project to test Wagtail CMS. Of course, we have ”&lt;a href=&quot;https://github.com/wagtail/wagtaildemo&quot;&gt;wagtaildemo&lt;/a&gt;”, but it’s synthetic project and I want to have a real word project. Yes, I can upgrade client’s projects first, but it’s a bit risky, I think.&lt;/p&gt;
+&lt;p&gt;That’s all for today. See you soon!&lt;/p&gt;</content:encoded></item></channel></rss>

@@ -1,0 +1,62 @@
+{
+  "assetsByChunkName": {
+    "component---src-pages-index-js": [
+      "component---src-pages-index-js-1698635823e3733e5ac4.js",
+      "component---src-pages-index-js-1698635823e3733e5ac4.js.map"
+    ],
+    "path---blog-how-move-model-between-two-django-apps": [
+      "path---blog-how-move-model-between-two-django-apps-bfae30cea0d485a52c69.js",
+      "path---blog-how-move-model-between-two-django-apps-bfae30cea0d485a52c69.js.map"
+    ],
+    "path---": [
+      "path----c77e87c67812b0de4864.js",
+      "path----c77e87c67812b0de4864.js.map"
+    ],
+    "component---node-modules-gatsby-plugin-offline-app-shell-js": [
+      "component---node-modules-gatsby-plugin-offline-app-shell-js-5c4c5a0f7af9dc69d6d7.js",
+      "component---node-modules-gatsby-plugin-offline-app-shell-js-5c4c5a0f7af9dc69d6d7.js.map"
+    ],
+    "component---src-templates-blog-post-js": [
+      "component---src-templates-blog-post-js-b5295703302413fc88b5.js",
+      "component---src-templates-blog-post-js-b5295703302413fc88b5.js.map"
+    ],
+    "component---src-layouts-index-js": [
+      "component---src-layouts-index-js-7d201df270037ab05310.js",
+      "component---src-layouts-index-js-7d201df270037ab05310.js.map"
+    ],
+    "path---blog-hello-world": [
+      "path---blog-hello-world-ef8ddda0ea16665f3f8c.js",
+      "path---blog-hello-world-ef8ddda0ea16665f3f8c.js.map"
+    ],
+    "path---index": [
+      "path---index-d792731172e2fc235611.js",
+      "path---index-d792731172e2fc235611.js.map"
+    ],
+    "component---src-pages-404-js": [
+      "component---src-pages-404-js-6e957444da3f2d5abd7e.js",
+      "component---src-pages-404-js-6e957444da3f2d5abd7e.js.map"
+    ],
+    "commons": [
+      "commons-6e82eaae3f56c620a9ec.js",
+      "commons-6e82eaae3f56c620a9ec.js.map"
+    ],
+    "path---404-html": [
+      "path---404-html-a0e39f21c11f6a62c5ab.js",
+      "path---404-html-a0e39f21c11f6a62c5ab.js.map"
+    ],
+    "path---offline-plugin-app-shell-fallback": [
+      "path---offline-plugin-app-shell-fallback-a0e39f21c11f6a62c5ab.js",
+      "path---offline-plugin-app-shell-fallback-a0e39f21c11f6a62c5ab.js.map"
+    ],
+    "app": [
+      "app-89ec82acb26e56cdceae.js",
+      "build-js-styles.css",
+      "app-89ec82acb26e56cdceae.js.map",
+      "build-js-styles.css.map"
+    ],
+    "path---404": [
+      "path---404-a0e39f21c11f6a62c5ab.js",
+      "path---404-a0e39f21c11f6a62c5ab.js.map"
+    ]
+  }
+}

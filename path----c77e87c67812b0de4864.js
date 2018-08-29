@@ -1,0 +1,2 @@
+webpackJsonp([60335399758886],{285:function(a,t){a.exports={data:{site:{siteMetadata:{title:"Mikalai Radchuk",author:"Mikalai Radchuk",description:"Tech Blog",socialMedia:{fbAppId:"1744263672501697",twitter:"@m1kola"}}}},layoutContext:{}}}});
+//# sourceMappingURL=path----c77e87c67812b0de4864.js.map

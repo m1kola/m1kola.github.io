@@ -1,0 +1,351 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><link rel="preload" href="/component---src-layouts-index-js-7d201df270037ab05310.js" as="script"/><link rel="preload" href="/component---src-templates-blog-post-js-b5295703302413fc88b5.js" as="script"/><link rel="preload" href="/path---blog-how-move-model-between-two-django-apps-bfae30cea0d485a52c69.js" as="script"/><link rel="preload" href="/app-89ec82acb26e56cdceae.js" as="script"/><link rel="preload" href="/commons-6e82eaae3f56c620a9ec.js" as="script"/><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl+'';f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer', 'GTM-PVR4H5');</script><link rel="alternate" type="application/rss+xml" href="/rss.xml"/><title data-react-helmet="true">How to move a model between two Django apps | Mikalai Radchuk</title><meta data-react-helmet="true" name="twitter:card" content="summary_large_image"/><meta data-react-helmet="true" name="twitter:site" content="@m1kola"/><meta data-react-helmet="true" name="twitter:creator" content="@m1kola"/><meta data-react-helmet="true" property="fb:app_id" content="1744263672501697"/><meta data-react-helmet="true" property="og:url" content="/blog/how-move-model-between-two-django-apps/"/><meta data-react-helmet="true" property="og:type" content="website"/><meta data-react-helmet="true" name="author" content="Mikalai Radchuk"/><meta data-react-helmet="true" property="og:title" content="How to move a model between two Django apps"/><meta data-react-helmet="true" name="twitter:title" content="How to move a model between two Django apps"/><meta data-react-helmet="true" name="description" content="And save references with content types and other entries"/><meta data-react-helmet="true" name="twitter:description" content="And save references with content types and other entries"/><meta data-react-helmet="true" property="og:description" content="And save references with content types and other entries"/><meta data-react-helmet="true" name="twitter:image" content="https://mikola.by/static/django-logo-negative-1d528e2cb5fbc29ad16c74e5d883c371-f6604.png"/><meta data-react-helmet="true" property="og:image" content="https://mikola.by/static/django-logo-negative-1d528e2cb5fbc29ad16c74e5d883c371-f6604.png"/><meta data-react-helmet="true" property="og:image:width" content="800"/><meta data-react-helmet="true" property="og:image:height" content="364"/><style id="typography.js">html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}article,aside,details,figcaption,figure,footer,header,main,menu,nav,section,summary{display:block}audio,canvas,progress,video{display:inline-block}audio:not([controls]){display:none;height:0}progress{vertical-align:baseline}[hidden],template{display:none}a{background-color:transparent;-webkit-text-decoration-skip:objects}a:active,a:hover{outline-width:0}abbr[title]{border-bottom:none;text-decoration:underline;text-decoration:underline dotted}b,strong{font-weight:inherit;font-weight:bolder}dfn{font-style:italic}h1{font-size:2em;margin:.67em 0}mark{background-color:#ff0;color:#000}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}img{border-style:none}svg:not(:root){overflow:hidden}code,kbd,pre,samp{font-family:monospace,monospace;font-size:1em}figure{margin:1em 40px}hr{box-sizing:content-box;height:0;overflow:visible}button,input,optgroup,select,textarea{font:inherit;margin:0}optgroup{font-weight:700}button,input{overflow:visible}button,select{text-transform:none}[type=reset],[type=submit],button,html [type=button]{-webkit-appearance:button}[type=button]::-moz-focus-inner,[type=reset]::-moz-focus-inner,[type=submit]::-moz-focus-inner,button::-moz-focus-inner{border-style:none;padding:0}[type=button]:-moz-focusring,[type=reset]:-moz-focusring,[type=submit]:-moz-focusring,button:-moz-focusring{outline:1px dotted ButtonText}fieldset{border:1px solid silver;margin:0 2px;padding:.35em .625em .75em}legend{box-sizing:border-box;color:inherit;display:table;max-width:100%;padding:0;white-space:normal}textarea{overflow:auto}[type=checkbox],[type=radio]{box-sizing:border-box;padding:0}[type=number]::-webkit-inner-spin-button,[type=number]::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}[type=search]::-webkit-search-cancel-button,[type=search]::-webkit-search-decoration{-webkit-appearance:none}::-webkit-input-placeholder{color:inherit;opacity:.54}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}html{font:118.75%/1.58 'Lora',serif;box-sizing:border-box;overflow-y:scroll;}*{box-sizing:inherit;}*:before{box-sizing:inherit;}*:after{box-sizing:inherit;}body{color:hsla(0,0%,0%,0.73);font-family:'Lora',serif;font-weight:400;word-wrap:break-word;font-kerning:normal;-moz-font-feature-settings:"kern", "liga", "clig", "calt";-ms-font-feature-settings:"kern", "liga", "clig", "calt";-webkit-font-feature-settings:"kern", "liga", "clig", "calt";font-feature-settings:"kern", "liga", "clig", "calt";}img{max-width:100%;margin-left:0;margin-right:0;margin-top:0;padding-bottom:0;padding-left:0;padding-right:0;padding-top:0;margin-bottom:1.58rem;}h1{margin-left:0;margin-right:0;margin-top:0;padding-bottom:0;padding-left:0;padding-right:0;padding-top:0;margin-bottom:1.58rem;color:hsla(0,0%,0%,0.9);font-family:'Varela Round',sans-serif;font-weight:400;text-rendering:optimizeLegibility;font-size:2rem;line-height:1.1;}h2{margin-left:0;margin-right:0;margin-top:0;padding-bottom:0;padding-left:0;padding-right:0;padding-top:0;margin-bottom:1.58rem;color:hsla(0,0%,0%,0.9);font-family:'Varela Round',sans-serif;font-weight:400;text-rendering:optimizeLegibility;font-size:1.51572rem;line-height:1.1;}h3{margin-left:0;margin-right:0;margin-top:0;padding-bottom:0;padding-left:0;padding-right:0;padding-top:0;margin-bottom:1.58rem;color:hsla(0,0%,0%,0.9);font-family:'Varela Round',sans-serif;font-weight:400;text-rendering:optimizeLegibility;font-size:1.31951rem;line-height:1.1;}h4{margin-left:0;margin-right:0;margin-top:0;padding-bottom:0;padding-left:0;padding-right:0;padding-top:0;margin-bottom:1.58rem;color:hsla(0,0%,0%,0.9);font-family:'Varela Round',sans-serif;font-weight:400;text-rendering:optimizeLegibility;font-size:1rem;line-height:1.1;}h5{margin-left:0;margin-right:0;margin-top:0;padding-bottom:0;padding-left:0;padding-right:0;padding-top:0;margin-bottom:1.58rem;color:hsla(0,0%,0%,0.9);font-family:'Varela Round',sans-serif;font-weight:400;text-rendering:optimizeLegibility;font-size:0.87055rem;line-height:1.1;}h6{margin-left:0;margin-right:0;margin-top:0;padding-bottom:0;padding-left:0;padding-right:0;padding-top:0;margin-bottom:1.58rem;color:hsla(0,0%,0%,0.9);font-family:'Varela Round',sans-serif;font-weight:400;text-rendering:optimizeLegibility;font-size:0.81225rem;line-height:1.1;}hgroup{margin-left:0;margin-right:0;margin-top:0;padding-bottom:0;padding-left:0;padding-right:0;padding-top:0;margin-bottom:1.58rem;}ul{margin-left:1.58rem;margin-right:0;margin-top:0;padding-bottom:0;padding-left:0;padding-right:0;padding-top:0;margin-bottom:1.58rem;list-style-position:outside;list-style-image:none;}ol{margin-left:1.58rem;margin-right:0;margin-top:0;padding-bottom:0;padding-left:0;padding-right:0;padding-top:0;margin-bottom:1.58rem;list-style-position:outside;list-style-image:none;}dl{margin-left:0;margin-right:0;margin-top:0;padding-bottom:0;padding-left:0;padding-right:0;padding-top:0;margin-bottom:1.58rem;}dd{margin-left:0;margin-right:0;margin-top:0;padding-bottom:0;padding-left:0;padding-right:0;padding-top:0;margin-bottom:1.58rem;}p{margin-left:0;margin-right:0;margin-top:0;padding-bottom:0;padding-left:0;padding-right:0;padding-top:0;margin-bottom:1.58rem;}figure{margin-left:0;margin-right:0;margin-top:0;padding-bottom:0;padding-left:0;padding-right:0;padding-top:0;margin-bottom:1.58rem;}pre{margin-left:0;margin-right:0;margin-top:0;padding-bottom:0;padding-left:0;padding-right:0;padding-top:0;margin-bottom:1.58rem;font-size:0.85rem;line-height:1.58rem;}table{margin-left:0;margin-right:0;margin-top:0;padding-bottom:0;padding-left:0;padding-right:0;padding-top:0;margin-bottom:1.58rem;font-size:1rem;line-height:1.58rem;border-collapse:collapse;width:100%;}fieldset{margin-left:0;margin-right:0;margin-top:0;padding-bottom:0;padding-left:0;padding-right:0;padding-top:0;margin-bottom:1.58rem;}blockquote{margin-left:0;margin-right:0;margin-top:0;padding-bottom:0;padding-left:0.9875rem;padding-right:0;padding-top:0;margin-bottom:1.58rem;font-size:1.1487rem;line-height:1.58rem;border-left:0.5925rem solid #134896;color:hsla(0,0%,0%,0.65);font-style:italic;}form{margin-left:0;margin-right:0;margin-top:0;padding-bottom:0;padding-left:0;padding-right:0;padding-top:0;margin-bottom:1.58rem;}noscript{margin-left:0;margin-right:0;margin-top:0;padding-bottom:0;padding-left:0;padding-right:0;padding-top:0;margin-bottom:1.58rem;}iframe{margin-left:0;margin-right:0;margin-top:0;padding-bottom:0;padding-left:0;padding-right:0;padding-top:0;margin-bottom:1.58rem;}hr{margin-left:0;margin-right:0;margin-top:0;padding-bottom:0;padding-left:0;padding-right:0;padding-top:0;margin-bottom:calc(1.58rem - 1px);background:hsla(0,0%,0%,0.2);border:none;height:1px;}address{margin-left:0;margin-right:0;margin-top:0;padding-bottom:0;padding-left:0;padding-right:0;padding-top:0;margin-bottom:1.58rem;}b{font-weight:700;}strong{font-weight:700;}dt{font-weight:700;}th{font-weight:700;}li{margin-bottom:calc(1.58rem / 2);}ol li{padding-left:0;}ul li{padding-left:0;}li > ol{margin-left:1.58rem;margin-bottom:calc(1.58rem / 2);margin-top:calc(1.58rem / 2);}li > ul{margin-left:1.58rem;margin-bottom:calc(1.58rem / 2);margin-top:calc(1.58rem / 2);}blockquote *:last-child{margin-bottom:0;}li *:last-child{margin-bottom:0;}p *:last-child{margin-bottom:0;}li > p{margin-bottom:calc(1.58rem / 2);}code{font-size:0.85rem;line-height:1.58rem;}kbd{font-size:0.85rem;line-height:1.58rem;}samp{font-size:0.85rem;line-height:1.58rem;}abbr{border-bottom:1px dotted hsla(0,0%,0%,0.5);cursor:help;}acronym{border-bottom:1px dotted hsla(0,0%,0%,0.5);cursor:help;}abbr[title]{border-bottom:1px dotted hsla(0,0%,0%,0.5);cursor:help;text-decoration:none;}thead{text-align:left;}td,th{text-align:left;border-bottom:1px solid hsla(0,0%,0%,0.12);font-feature-settings:"tnum";-moz-font-feature-settings:"tnum";-ms-font-feature-settings:"tnum";-webkit-font-feature-settings:"tnum";padding-left:1.05333rem;padding-right:1.05333rem;padding-top:0.79rem;padding-bottom:calc(0.79rem - 1px);}th:first-child,td:first-child{padding-left:0;}th:last-child,td:last-child{padding-right:0;}a{color:#134896;text-decoration:none;text-shadow:.03em 0 #fff,-.03em 0 #fff,0 .03em #fff,0 -.03em #fff,.06em 0 #fff,-.06em 0 #fff,.09em 0 #fff,-.09em 0 #fff,.12em 0 #fff,-.12em 0 #fff,.15em 0 #fff,-.15em 0 #fff;background-image:linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 1px, #134896 1px, #134896 2px, rgba(0, 0, 0, 0) 2px);}a:hover,a:active{text-shadow:none;background-image:none;}h1,h2,h3,h4,h5,h6{margin-top:2.37rem;margin-bottom:0.79rem;}li>ol,li>ul{margin-left:20px;margin-bottom:0;}blockquote > :last-child{margin-bottom:0;}blockquote cite{font-size:1rem;line-height:1.58rem;color:hsla(0,0%,0%,0.73);font-style:normal;font-weight:400;}blockquote cite:before{content:"— ";}@media only screen and (max-width:480px){html{font-size:106.25%;line-height:1.6470588235294117;}blockquote{border-left:0.29625rem solid #134896;color:hsla(0,0%,0%,0.59);padding-left:0.88875rem;font-style:italic;margin-left:-1.185rem;margin-right:0;}}a.gatsby-resp-image-link{background-image:none;}</style><link href="//fonts.googleapis.com/css?family=Varela+Round:400|Lora:400,400i,700" rel="stylesheet" type="text/css"/><link rel="canonical" href="https://mikola.by/blog/how-move-model-between-two-django-apps/" data-baseprotocol="https:" data-basehost="mikola.by"/><style id="gatsby-inlined-css">code[class*=language-],pre[class*=language-]{color:#657b83;font-family:Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;line-height:1.5;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-hyphens:none;-ms-hyphens:none;hyphens:none}code[class*=language-]::-moz-selection,code[class*=language-] ::-moz-selection,pre[class*=language-]::-moz-selection,pre[class*=language-] ::-moz-selection{background:#073642}code[class*=language-]::selection,code[class*=language-] ::selection,pre[class*=language-]::selection,pre[class*=language-] ::selection{background:#073642}pre[class*=language-]{padding:1em;margin:.5em 0;overflow:auto;border-radius:.3em}:not(pre)>code[class*=language-],pre[class*=language-]{background-color:#fdf6e3}:not(pre)>code[class*=language-]{padding:.1em;border-radius:.3em}.token.cdata,.token.comment,.token.doctype,.token.prolog{color:#93a1a1}.token.punctuation{color:#586e75}.namespace{opacity:.7}.token.boolean,.token.constant,.token.deleted,.token.number,.token.property,.token.symbol,.token.tag{color:#268bd2}.token.attr-name,.token.builtin,.token.char,.token.inserted,.token.selector,.token.string,.token.url{color:#2aa198}.token.entity{color:#657b83;background:#eee8d5}.token.atrule,.token.attr-value,.token.keyword{color:#859900}.token.function{color:#b58900}.token.important,.token.regex,.token.variable{color:#cb4b16}.token.bold,.token.important{font-weight:700}.token.italic{font-style:italic}.token.entity{cursor:help}</style></head><body><noscript><iframe
+  src="https://www.googletagmanager.com/ns.html?id=GTM-PVR4H5"
+  height="0"
+  width="0"
+  style="display: none; visibility: hidden"
+></iframe></noscript><div id="___gatsby"><div style="margin-left:auto;margin-right:auto;max-width:37.92rem;padding:2.37rem 1.185rem;" data-reactroot="" data-reactid="1" data-react-checksum="1269980920"><!-- react-empty: 2 --><h3 style="font-family:Montserrat, sans-serif;margin-top:0;margin-bottom:-1.58rem;" data-reactid="3"><a style="box-shadow:none;text-decoration:none;color:inherit;" href="/" data-reactid="4">Mikalai Radchuk</a></h3><div data-reactid="5"><!-- react-empty: 6 --><p style="font-size:0.87055rem;line-height:1.58rem;display:block;margin-top:3.16rem;margin-bottom:-2.37rem;" data-reactid="7">Sep 25, 2016</p><h1 data-reactid="8">How to move a model between two Django apps</h1><h2 style="font-size:1.25992rem;line-height:1.58rem;margin-top:0rem;" data-reactid="9">And save references with content types and other entries</h2><div data-reactid="10"><h3>Warning</h3>
+<p>Do not perform any operations on a production database, test everyting on a dump first.</p>
+<h3>The wrong way</h3>
+<p>If you have a Django app (I’ll call it <strong>app1</strong>, in my example) with a lot of models and if you want to move some of these models into a separate app (will be <strong>app2</strong>) you can’t just cut a model definition from the <strong>app1</strong>, paste it into a new application and then run the <strong>makemigrations</strong> command. Django will simply remove your table and will create a new one. As a result of these operations, you’ll lose your data.</p>
+<h4>Why does it happen?</h4>
+<p>Whenever you run the <strong>makemigrations</strong> command, Django applies all migrations internally to build a project state, then compares the state to the state presented in your code. All the differences will be written in new migration files.</p>
+<p>Django manages migrations on a per-app basis and it “thinks” that one model has been removed from <strong>app1</strong> and a new one has been added to <strong>app2</strong>.</p>
+<p>So your cut-and-paste operation will lead to the same result as the following operations:</p>
+<ol>
+<li>Remove your model definition from <strong>app1</strong>;</li>
+<li>Run the <strong>makemigrations</strong> command <em>(here Django will generate a migration that removes your data)</em>;</li>
+<li>Add your model definition to <strong>app2</strong>;</li>
+<li>Run the <strong>makemigrations</strong> command again.</li>
+</ol>
+<h3>The right way</h3>
+<p>It will be easier to explain the solution with an example. In my <strong>app1</strong> application I have the following <strong>models.py</strong>:</p>
+<div class="gatsby-highlight">
+      <pre class="language-python"><code class="language-python"><span class="token keyword">from</span> django<span class="token punctuation">.</span>contrib<span class="token punctuation">.</span>contenttypes<span class="token punctuation">.</span>models <span class="token keyword">import</span> ContentType
+<span class="token keyword">from</span> django<span class="token punctuation">.</span>db <span class="token keyword">import</span> models
+
+
+<span class="token keyword">def</span> <span class="token function">get_default_page_content_type</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> ContentType<span class="token punctuation">.</span>objects<span class="token punctuation">.</span>get_for_model<span class="token punctuation">(</span>DefaultContentType<span class="token punctuation">)</span>
+
+
+<span class="token keyword">class</span> <span class="token class-name">DefaultContentType</span><span class="token punctuation">(</span>models<span class="token punctuation">.</span>Model<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">pass</span>
+
+
+<span class="token keyword">class</span> <span class="token class-name">ModelWithContentType</span><span class="token punctuation">(</span>models<span class="token punctuation">.</span>Model<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    content_type <span class="token operator">=</span> models<span class="token punctuation">.</span>ForeignKey<span class="token punctuation">(</span>
+        <span class="token string">'contenttypes.ContentType'</span><span class="token punctuation">,</span>
+        related_name<span class="token operator">=</span><span class="token string">'+'</span><span class="token punctuation">,</span>
+        on_delete<span class="token operator">=</span>models<span class="token punctuation">.</span>SET<span class="token punctuation">(</span>get_default_page_content_type<span class="token punctuation">)</span>
+    <span class="token punctuation">)</span>
+
+
+<span class="token keyword">class</span> <span class="token class-name">RelatedModel</span><span class="token punctuation">(</span>models<span class="token punctuation">.</span>Model<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    relation <span class="token operator">=</span> models<span class="token punctuation">.</span>ForeignKey<span class="token punctuation">(</span>
+        <span class="token string">'app1.ModelThatShouldBeMoved'</span><span class="token punctuation">,</span>
+        related_name<span class="token operator">=</span><span class="token string">'relations'</span><span class="token punctuation">,</span>
+        on_delete<span class="token operator">=</span>models<span class="token punctuation">.</span>CASCADE
+    <span class="token punctuation">)</span>
+
+
+<span class="token keyword">class</span> <span class="token class-name">ModelThatShouldBeMoved</span><span class="token punctuation">(</span>models<span class="token punctuation">.</span>Model<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    title <span class="token operator">=</span> models<span class="token punctuation">.</span>CharField<span class="token punctuation">(</span>max_length<span class="token operator">=</span><span class="token number">255</span><span class="token punctuation">)</span></code></pre>
+      </div>
+<p>As you may notice from the names of models, I want to move the <strong>ModelThatShouldBeMoved</strong> model into <strong>app2</strong>. This model is related to the <strong>RelatedModel</strong> model which will stay in <strong>app1.</strong> Also we have an indirect reference (through the <strong>ModelWithContentType.content_type</strong> field) from <strong>ModelWithContentType</strong>. And we need to keep all these direct and indirect relations!</p>
+<p>You can create a test data set using the following snippet (run <strong>python manage.py shell</strong> and insert the code):</p>
+<div class="gatsby-highlight">
+      <pre class="language-python"><code class="language-python"><span class="token keyword">from</span> django<span class="token punctuation">.</span>contrib<span class="token punctuation">.</span>contenttypes<span class="token punctuation">.</span>models <span class="token keyword">import</span> ContentType
+
+<span class="token keyword">from</span> app1<span class="token punctuation">.</span>models <span class="token keyword">import</span> ModelWithContentType<span class="token punctuation">,</span> ModelThatShouldBeMoved<span class="token punctuation">,</span> RelatedModel
+
+<span class="token comment"># We need to keep the same content type id for ModelThatShouldBeMoved</span>
+content_type <span class="token operator">=</span> ContentType<span class="token punctuation">.</span>objects<span class="token punctuation">.</span>get_for_model<span class="token punctuation">(</span>ModelThatShouldBeMoved<span class="token punctuation">)</span>
+ModelWithContentType<span class="token punctuation">.</span>objects<span class="token punctuation">.</span>create<span class="token punctuation">(</span>content_type<span class="token operator">=</span>content_type<span class="token punctuation">)</span>
+
+<span class="token comment"># We need to keep relations with other objects</span>
+test_entry <span class="token operator">=</span> ModelThatShouldBeMoved<span class="token punctuation">.</span>objects<span class="token punctuation">.</span>create<span class="token punctuation">(</span>title<span class="token operator">=</span><span class="token string">'Test entry'</span><span class="token punctuation">)</span>
+relation <span class="token operator">=</span> RelatedModel<span class="token punctuation">.</span>objects<span class="token punctuation">.</span>create<span class="token punctuation">(</span>relation<span class="token operator">=</span>test_entry<span class="token punctuation">)</span></code></pre>
+      </div>
+<p>As a result, you will have the following entries in the database:</p>
+<div class="gatsby-highlight">
+      <pre class="language-bash"><code class="language-bash">django_migration_test<span class="token operator">=</span><span class="token comment"># select * from app1_modelthatshouldbemoved;</span>
+ <span class="token function">id</span> <span class="token operator">|</span>   title
+----+------------
+  1 <span class="token operator">|</span> Test entry
+<span class="token punctuation">(</span>1 row<span class="token punctuation">)</span>
+
+django_migration_test<span class="token operator">=</span><span class="token comment"># select * from app1_relatedmodel;</span>
+ <span class="token function">id</span> <span class="token operator">|</span> relation_id
+----+-------------
+  1 <span class="token operator">|</span>           1
+<span class="token punctuation">(</span>1 row<span class="token punctuation">)</span>
+
+django_migration_test<span class="token operator">=</span><span class="token comment"># select * from app1_modelwithcontenttype;</span>
+ <span class="token function">id</span> <span class="token operator">|</span> content_type_id
+----+-----------------
+  1 <span class="token operator">|</span>               8
+<span class="token punctuation">(</span>1 row<span class="token punctuation">)</span>
+
+django_migration_test<span class="token operator">=</span><span class="token comment"># select * from django_content_type where app_label in ('app1', 'app2');</span>
+ <span class="token function">id</span> <span class="token operator">|</span> app_label <span class="token operator">|</span>         model
+----+-----------+------------------------
+  7 <span class="token operator">|</span> app1      <span class="token operator">|</span> defaultcontenttype
+  8 <span class="token operator">|</span> app1      <span class="token operator">|</span> modelthatshouldbemoved
+  9 <span class="token operator">|</span> app1      <span class="token operator">|</span> relatedmodel
+ 10 <span class="token operator">|</span> app1      <span class="token operator">|</span> modelwithcontenttype
+<span class="token punctuation">(</span>4 rows<span class="token punctuation">)</span></code></pre>
+      </div>
+<h4>TL;DR;</h4>
+<p>If you are familiar with Django migrations, here is the list of steps to get the job done:</p>
+<ol>
+<li>Create a migration in <strong>app1</strong> which will rename a table in the database for <strong>ModelThatShouldBeMoved</strong>. This migration should change only the database, not the project state;</li>
+<li>Create a migration in <strong>app2</strong> which will add a model to the state and will update content types in the database. I’ll also rename the <strong>ModelThatShouldBeMoved</strong> model to <strong>ModelThatWasMoved</strong> in my example;</li>
+<li>Create migrations in <strong>all the apps</strong> that have relations with the model that you want to move. Migrations should change relations in the state;</li>
+<li>Create a migration that removes the <strong>ModelThatShouldBeMoved</strong> model from the state;</li>
+<li>Update your code.</li>
+</ol>
+<p>Some migrations will use the <a href="https://docs.djangoproject.com/en/1.10/ref/migration-operations/#separatedatabaseandstate">SeparateDatabaseAndState</a> operation<strong>.</strong></p>
+<h4>Step 1</h4>
+<p>First, I need to rename a table in the database for the <strong>ModelThatShouldBeMoved</strong> model.</p>
+<p>This step isn’t necessary, if you specified the <a href="https://docs.djangoproject.com/en/1.10/ref/models/options/#db-table">Meta.db_table</a> attribute in your model before. By default, Django generates a table name using an app label and a model’s class name, with an underscore between them (<a href="https://docs.djangoproject.com/en/1.10/ref/models/options/#table-names">see the docs</a> for details). If you don’t care about the table name, you can simply add the <strong>Meta.db_table</strong> attribute to your model and generate a new migration automatically.</p>
+<p>In my case I have a table with a name <strong>app1_modelthatshouldbemoved</strong>. I want to rename the <strong>ModelThatShouldBeMoved</strong> model to <strong>ModelThatWasMoved</strong> and put it into the <strong>app2</strong>, so I need the name to be <strong>app2_modelthatwasmoved</strong> to match Django’s naming convention.</p>
+<p>Here is the migration for my case (<strong>0002<em>rename</em>table.py</strong> in the <strong>app1</strong> app):</p>
+<div class="gatsby-highlight">
+      <pre class="language-python"><code class="language-python"><span class="token keyword">from</span> django<span class="token punctuation">.</span>db <span class="token keyword">import</span> migrations
+
+
+<span class="token keyword">class</span> <span class="token class-name">Migration</span><span class="token punctuation">(</span>migrations<span class="token punctuation">.</span>Migration<span class="token punctuation">)</span><span class="token punctuation">:</span>
+
+    dependencies <span class="token operator">=</span> <span class="token punctuation">[</span>
+        <span class="token comment"># This migration should depend on the previous migration in our app</span>
+        <span class="token punctuation">(</span><span class="token string">'app1'</span><span class="token punctuation">,</span> <span class="token string">'0001_initial'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span>
+
+    operations <span class="token operator">=</span> <span class="token punctuation">[</span>
+        migrations<span class="token punctuation">.</span>AlterModelTable<span class="token punctuation">(</span>name<span class="token operator">=</span><span class="token string">'ModelThatShouldBeMoved'</span><span class="token punctuation">,</span> table<span class="token operator">=</span><span class="token string">'app2_modelthatwasmoved'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span></code></pre>
+      </div>
+<h4>Step 2</h4>
+<p>Now I need to add a migration that creates a model in the state for <strong>app2</strong> and updates content types in the database.</p>
+<p>I’ve called my migration <strong>0001<em>move</em>a<em>model</em>and_rename.py</strong>, because it’s the first migration in my <strong>app2</strong>. In your case it may be a migration with a different number. Also you will probably need to specify the previous migration in your app as a dependency.</p>
+<div class="gatsby-highlight">
+      <pre class="language-python"><code class="language-python"><span class="token keyword">from</span> __future__ <span class="token keyword">import</span> unicode_literals
+
+<span class="token keyword">from</span> django<span class="token punctuation">.</span>db <span class="token keyword">import</span> migrations<span class="token punctuation">,</span> models
+
+
+<span class="token keyword">def</span> <span class="token function">update_contentypes</span><span class="token punctuation">(</span>apps<span class="token punctuation">,</span> schema_editor<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">"""
+    Updates content types.
+    We want to have the same content type id, when the model is moved and renamed.
+    """</span>
+    ContentType <span class="token operator">=</span> apps<span class="token punctuation">.</span>get_model<span class="token punctuation">(</span><span class="token string">'contenttypes'</span><span class="token punctuation">,</span> <span class="token string">'ContentType'</span><span class="token punctuation">)</span>
+    db_alias <span class="token operator">=</span> schema_editor<span class="token punctuation">.</span>connection<span class="token punctuation">.</span>alias
+
+    <span class="token comment"># Move the ModelThatShouldBeMoved model to app2 and rename to ModelThatWasMoved</span>
+    qs <span class="token operator">=</span> ContentType<span class="token punctuation">.</span>objects<span class="token punctuation">.</span>using<span class="token punctuation">(</span>db_alias<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token builtin">filter</span><span class="token punctuation">(</span>app_label<span class="token operator">=</span><span class="token string">'app1'</span><span class="token punctuation">,</span> model<span class="token operator">=</span><span class="token string">'modelthatshouldbemoved'</span><span class="token punctuation">)</span>
+    qs<span class="token punctuation">.</span>update<span class="token punctuation">(</span>app_label<span class="token operator">=</span><span class="token string">'app2'</span><span class="token punctuation">,</span> model<span class="token operator">=</span><span class="token string">'modelthatwasmoved'</span><span class="token punctuation">)</span>
+
+
+<span class="token keyword">def</span> <span class="token function">update_contentypes_reverse</span><span class="token punctuation">(</span>apps<span class="token punctuation">,</span> schema_editor<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">"""
+    Reverts changes in content types.
+    """</span>
+    ContentType <span class="token operator">=</span> apps<span class="token punctuation">.</span>get_model<span class="token punctuation">(</span><span class="token string">'contenttypes'</span><span class="token punctuation">,</span> <span class="token string">'ContentType'</span><span class="token punctuation">)</span>
+    db_alias <span class="token operator">=</span> schema_editor<span class="token punctuation">.</span>connection<span class="token punctuation">.</span>alias
+
+    <span class="token comment"># Move the ModelThatWasMoved model to app1 and rename to ModelThatShouldBeMoved</span>
+    qs <span class="token operator">=</span> ContentType<span class="token punctuation">.</span>objects<span class="token punctuation">.</span>using<span class="token punctuation">(</span>db_alias<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token builtin">filter</span><span class="token punctuation">(</span>app_label<span class="token operator">=</span><span class="token string">'app2'</span><span class="token punctuation">,</span> model<span class="token operator">=</span><span class="token string">'modelthatwasmoved'</span><span class="token punctuation">)</span>
+    qs<span class="token punctuation">.</span>update<span class="token punctuation">(</span>app_label<span class="token operator">=</span><span class="token string">'app1'</span><span class="token punctuation">,</span> model<span class="token operator">=</span><span class="token string">'modelthatshouldbemoved'</span><span class="token punctuation">)</span>
+
+
+<span class="token keyword">class</span> <span class="token class-name">Migration</span><span class="token punctuation">(</span>migrations<span class="token punctuation">.</span>Migration<span class="token punctuation">)</span><span class="token punctuation">:</span>
+
+    dependencies <span class="token operator">=</span> <span class="token punctuation">[</span>
+        <span class="token comment"># We need to run 0002_rename_table form app1 first,</span>
+        <span class="token comment"># because it changes the table of ModelThatShouldBeMoved.</span>
+        <span class="token comment"># Only after that we will update content types and rename the model.</span>
+        <span class="token punctuation">(</span><span class="token string">'app1'</span><span class="token punctuation">,</span> <span class="token string">'0002_rename_table'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token comment"># This migration also depends on the contenttype app,</span>
+        <span class="token comment"># so we need to specify dependency on 0002_remove_content_type_name.</span>
+        <span class="token comment"># If you use Django &lt; 1.8, you will probably need to specify 0001_initial.</span>
+        <span class="token punctuation">(</span><span class="token string">'contenttypes'</span><span class="token punctuation">,</span> <span class="token string">'0002_remove_content_type_name'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span>
+
+    state_operations <span class="token operator">=</span> <span class="token punctuation">[</span>
+        migrations<span class="token punctuation">.</span>CreateModel<span class="token punctuation">(</span>
+            name<span class="token operator">=</span><span class="token string">'ModelThatShouldBeMoved'</span><span class="token punctuation">,</span>
+            fields<span class="token operator">=</span><span class="token punctuation">[</span>
+                <span class="token punctuation">(</span><span class="token string">'id'</span><span class="token punctuation">,</span> models<span class="token punctuation">.</span>AutoField<span class="token punctuation">(</span>auto_created<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span> primary_key<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span> serialize<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">,</span> verbose_name<span class="token operator">=</span><span class="token string">'ID'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                <span class="token punctuation">(</span><span class="token string">'title'</span><span class="token punctuation">,</span> models<span class="token punctuation">.</span>CharField<span class="token punctuation">(</span>max_length<span class="token operator">=</span><span class="token number">255</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+            <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token punctuation">)</span><span class="token punctuation">,</span>
+        migrations<span class="token punctuation">.</span>RenameModel<span class="token punctuation">(</span>
+            old_name<span class="token operator">=</span><span class="token string">'ModelThatShouldBeMoved'</span><span class="token punctuation">,</span>
+            new_name<span class="token operator">=</span><span class="token string">'ModelThatWasMoved'</span><span class="token punctuation">,</span>
+        <span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span>
+
+    database_operations <span class="token operator">=</span> <span class="token punctuation">[</span>
+        migrations<span class="token punctuation">.</span>RunPython<span class="token punctuation">(</span>update_contentypes<span class="token punctuation">,</span> update_contentypes_reverse<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span>
+
+    operations <span class="token operator">=</span> <span class="token punctuation">[</span>
+        migrations<span class="token punctuation">.</span>SeparateDatabaseAndState<span class="token punctuation">(</span>
+            state_operations<span class="token operator">=</span>state_operations<span class="token punctuation">,</span>
+            database_operations<span class="token operator">=</span>database_operations
+        <span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span></code></pre>
+      </div>
+<p>Note that the <strong>CreateModel</strong> operation should reflect your model definition. Otherwise you may lose your data.</p>
+<p>As an alternative to the <strong>CreateModel</strong> operation, you can copy and paste all the operations related to your model since the first migration (usually <strong>0001_initial</strong>) in your application.</p>
+<p>Note also that if you do not need to rename your model, you need to remove the <strong>RenameModel</strong> operation and remove the <strong>model</strong> argument from the <strong>update</strong> calls in the <strong>update_contentypes</strong> and <strong>update<em>contentypes</em>reverse</strong> functions.</p>
+<h4>Step 3</h4>
+<p>I need to create migrations for <strong>all the apps that have models which have relations with the model that I want to move</strong>.</p>
+<p>In my example, I have only one app that contains only one field which refers the old <strong>ModelThatShouldBeMoved</strong> model. My migration (<strong>0003<em>update</em>relations.py</strong> in <strong>app1</strong>):</p>
+<div class="gatsby-highlight">
+      <pre class="language-python"><code class="language-python"><span class="token keyword">from</span> django<span class="token punctuation">.</span>db <span class="token keyword">import</span> migrations<span class="token punctuation">,</span> models
+<span class="token keyword">import</span> django<span class="token punctuation">.</span>db<span class="token punctuation">.</span>models<span class="token punctuation">.</span>deletion
+
+
+<span class="token keyword">class</span> <span class="token class-name">Migration</span><span class="token punctuation">(</span>migrations<span class="token punctuation">.</span>Migration<span class="token punctuation">)</span><span class="token punctuation">:</span>
+
+    dependencies <span class="token operator">=</span> <span class="token punctuation">[</span>
+        <span class="token comment"># The previous migration in app1</span>
+        <span class="token punctuation">(</span><span class="token string">'app1'</span><span class="token punctuation">,</span> <span class="token string">'0002_rename_table'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token comment"># This migration should depend on the migration that creates a model in the state of app2,</span>
+        <span class="token comment"># because we are going to refer a new model here.</span>
+        <span class="token punctuation">(</span><span class="token string">'app2'</span><span class="token punctuation">,</span> <span class="token string">'0001_move_a_model_and_rename'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span>
+
+    state_operations <span class="token operator">=</span> <span class="token punctuation">[</span>
+        migrations<span class="token punctuation">.</span>AlterField<span class="token punctuation">(</span>
+            model_name<span class="token operator">=</span><span class="token string">'relatedmodel'</span><span class="token punctuation">,</span>
+            name<span class="token operator">=</span><span class="token string">'relation'</span><span class="token punctuation">,</span>
+            field<span class="token operator">=</span>models<span class="token punctuation">.</span>ForeignKey<span class="token punctuation">(</span>on_delete<span class="token operator">=</span>django<span class="token punctuation">.</span>db<span class="token punctuation">.</span>models<span class="token punctuation">.</span>deletion<span class="token punctuation">.</span>CASCADE<span class="token punctuation">,</span> related_name<span class="token operator">=</span><span class="token string">'relations'</span><span class="token punctuation">,</span>
+                                    to<span class="token operator">=</span><span class="token string">'app2.ModelThatWasMoved'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span>
+
+    operations <span class="token operator">=</span> <span class="token punctuation">[</span>
+        migrations<span class="token punctuation">.</span>SeparateDatabaseAndState<span class="token punctuation">(</span>state_operations<span class="token operator">=</span>state_operations<span class="token punctuation">)</span>
+    <span class="token punctuation">]</span></code></pre>
+      </div>
+<p>Note that the <strong>AlterField</strong> operation should contain the same field definition as your model. The only difference is reference to your model. So this definition:</p>
+<div class="gatsby-highlight">
+      <pre class="language-python"><code class="language-python">models<span class="token punctuation">.</span>ForeignKey<span class="token punctuation">(</span>on_delete<span class="token operator">=</span>django<span class="token punctuation">.</span>db<span class="token punctuation">.</span>models<span class="token punctuation">.</span>deletion<span class="token punctuation">.</span>CASCADE<span class="token punctuation">,</span> related_name<span class="token operator">=</span><span class="token string">'relations'</span><span class="token punctuation">,</span>
+                                    to<span class="token operator">=</span><span class="token string">'app1.ModelThatShouldBeMoved'</span><span class="token punctuation">)</span></code></pre>
+      </div>
+<p>should be replaced with this one, in my case:</p>
+<div class="gatsby-highlight">
+      <pre class="language-python"><code class="language-python">models<span class="token punctuation">.</span>ForeignKey<span class="token punctuation">(</span>on_delete<span class="token operator">=</span>django<span class="token punctuation">.</span>db<span class="token punctuation">.</span>models<span class="token punctuation">.</span>deletion<span class="token punctuation">.</span>CASCADE<span class="token punctuation">,</span> related_name<span class="token operator">=</span><span class="token string">'relations'</span><span class="token punctuation">,</span>
+                                    to<span class="token operator">=</span><span class="token string">'app2.ModelThatWasMoved'</span><span class="token punctuation">)</span></code></pre>
+      </div>
+<h4>Step 4</h4>
+<p>The last migration simply removes the model from the state of <strong>app1</strong> (<strong>0004<em>delete</em>old<em>model</em>from<em>the</em>state.py</strong>):</p>
+<div class="gatsby-highlight">
+      <pre class="language-python"><code class="language-python"><span class="token keyword">from</span> __future__ <span class="token keyword">import</span> unicode_literals
+
+<span class="token keyword">from</span> django<span class="token punctuation">.</span>db <span class="token keyword">import</span> migrations
+
+
+<span class="token keyword">class</span> <span class="token class-name">Migration</span><span class="token punctuation">(</span>migrations<span class="token punctuation">.</span>Migration<span class="token punctuation">)</span><span class="token punctuation">:</span>
+
+    dependencies <span class="token operator">=</span> <span class="token punctuation">[</span>
+        <span class="token punctuation">(</span><span class="token string">'app1'</span><span class="token punctuation">,</span> <span class="token string">'0003_update_relations'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span>
+
+    state_operations <span class="token operator">=</span> <span class="token punctuation">[</span>
+        migrations<span class="token punctuation">.</span>DeleteModel<span class="token punctuation">(</span><span class="token string">'ModelThatShouldBeMoved'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span>
+
+    operations <span class="token operator">=</span> <span class="token punctuation">[</span>
+        migrations<span class="token punctuation">.</span>SeparateDatabaseAndState<span class="token punctuation">(</span>state_operations<span class="token operator">=</span>state_operations<span class="token punctuation">)</span>
+    <span class="token punctuation">]</span></code></pre>
+      </div>
+<h4>Step 5</h4>
+<h4></h4>
+<p>On the final step I just need to update my code:</p>
+<ol>
+<li>Move the model definition into a new app (<strong>app2</strong>, in my case);</li>
+<li>Update imports;</li>
+<li>Update relations (see the <strong>RelatedModel.relation</strong> definition, for example).</li>
+</ol>
+<p>My <strong>models.py</strong> from <strong>app1</strong>:</p>
+<div class="gatsby-highlight">
+      <pre class="language-python"><code class="language-python"><span class="token keyword">from</span> django<span class="token punctuation">.</span>contrib<span class="token punctuation">.</span>contenttypes<span class="token punctuation">.</span>models <span class="token keyword">import</span> ContentType
+<span class="token keyword">from</span> django<span class="token punctuation">.</span>db <span class="token keyword">import</span> models
+
+
+<span class="token keyword">def</span> <span class="token function">get_default_page_content_type</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> ContentType<span class="token punctuation">.</span>objects<span class="token punctuation">.</span>get_for_model<span class="token punctuation">(</span>DefaultContentType<span class="token punctuation">)</span>
+
+
+<span class="token keyword">class</span> <span class="token class-name">DefaultContentType</span><span class="token punctuation">(</span>models<span class="token punctuation">.</span>Model<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">pass</span>
+
+
+<span class="token keyword">class</span> <span class="token class-name">ModelWithContentType</span><span class="token punctuation">(</span>models<span class="token punctuation">.</span>Model<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    content_type <span class="token operator">=</span> models<span class="token punctuation">.</span>ForeignKey<span class="token punctuation">(</span>
+        <span class="token string">'contenttypes.ContentType'</span><span class="token punctuation">,</span>
+        related_name<span class="token operator">=</span><span class="token string">'+'</span><span class="token punctuation">,</span>
+        on_delete<span class="token operator">=</span>models<span class="token punctuation">.</span>SET<span class="token punctuation">(</span>get_default_page_content_type<span class="token punctuation">)</span>
+    <span class="token punctuation">)</span>
+
+
+<span class="token keyword">class</span> <span class="token class-name">RelatedModel</span><span class="token punctuation">(</span>models<span class="token punctuation">.</span>Model<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    relation <span class="token operator">=</span> models<span class="token punctuation">.</span>ForeignKey<span class="token punctuation">(</span>
+        <span class="token string">'app2.ModelThatWasMoved'</span><span class="token punctuation">,</span>
+        related_name<span class="token operator">=</span><span class="token string">'relations'</span><span class="token punctuation">,</span>
+        on_delete<span class="token operator">=</span>models<span class="token punctuation">.</span>CASCADE
+    <span class="token punctuation">)</span></code></pre>
+      </div>
+<p>And <strong>models.py</strong> from <strong>app2</strong>:</p>
+<div class="gatsby-highlight">
+      <pre class="language-python"><code class="language-python"><span class="token keyword">from</span> django<span class="token punctuation">.</span>db <span class="token keyword">import</span> models
+
+
+<span class="token keyword">class</span> <span class="token class-name">ModelThatWasMoved</span><span class="token punctuation">(</span>models<span class="token punctuation">.</span>Model<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    title <span class="token operator">=</span> models<span class="token punctuation">.</span>CharField<span class="token punctuation">(</span>max_length<span class="token operator">=</span><span class="token number">255</span><span class="token punctuation">)</span></code></pre>
+      </div>
+<h4>Testing</h4>
+<p>To test changes you can run the <strong>python **</strong>manage.py makemigrations —dry-run** command. This command will try to generate migrations without actually writing them to a disk.</p>
+<p><strong>Expected result:</strong></p>
+<div class="gatsby-highlight">
+      <pre class="language-bash"><code class="language-bash">No changes detected</code></pre>
+      </div>
+<p>You can also try to run the same SQL queries as shown before (but with a new table name):</p>
+<div class="gatsby-highlight">
+      <pre class="language-bash"><code class="language-bash">django_migration_test<span class="token operator">=</span><span class="token comment"># select * from app2_modelthatwasmoved;</span>
+ <span class="token function">id</span> <span class="token operator">|</span>   title
+----+------------
+  1 <span class="token operator">|</span> Test entry
+<span class="token punctuation">(</span>1 row<span class="token punctuation">)</span>
+
+django_migration_test<span class="token operator">=</span><span class="token comment"># select * from app1_relatedmodel;</span>
+ <span class="token function">id</span> <span class="token operator">|</span> relation_id
+----+-------------
+  1 <span class="token operator">|</span>           1
+<span class="token punctuation">(</span>1 row<span class="token punctuation">)</span>
+
+django_migration_test<span class="token operator">=</span><span class="token comment"># select * from app1_modelwithcontenttype;</span>
+ <span class="token function">id</span> <span class="token operator">|</span> content_type_id
+----+-----------------
+  1 <span class="token operator">|</span>               8
+<span class="token punctuation">(</span>1 row<span class="token punctuation">)</span>
+
+django_migration_test<span class="token operator">=</span><span class="token comment"># select * from django_content_type where app_label in ('app1', 'app2');</span>
+ <span class="token function">id</span> <span class="token operator">|</span> app_label <span class="token operator">|</span>        model
+----+-----------+----------------------
+  7 <span class="token operator">|</span> app1      <span class="token operator">|</span> defaultcontenttype
+  9 <span class="token operator">|</span> app1      <span class="token operator">|</span> relatedmodel
+ 10 <span class="token operator">|</span> app1      <span class="token operator">|</span> modelwithcontenttype
+  8 <span class="token operator">|</span> app2      <span class="token operator">|</span> modelthatwasmoved
+<span class="token punctuation">(</span>4 rows<span class="token punctuation">)</span></code></pre>
+      </div>
+<p><strong>Expected result:</strong></p>
+<p>Data should be the same as before except the <strong>django<em>content</em>type</strong> table. This table should contain a new <strong>app_label</strong> and a new <strong>model</strong> name, but the same id (see the entry with <strong>id=8</strong>) for the model that has been moved.</p></div><hr style="margin-bottom:1.58rem;" data-reactid="11"/><div style="display:flex;margin-bottom:3.95rem;" data-reactid="12"><img src="/static/profile-pic.bbcb642e.jpg" alt="Mikalai Radchuk" style="margin-right:0.79rem;margin-bottom:0;width:3.16rem;height:3.16rem;border-radius:50%;" data-reactid="13"/><p data-reactid="14">Mikalai is a Python and Wagtail developer by day. At night he turns into a Gopher and attempts to contribute into Kubernetes</p></div><ul style="display:flex;flex-wrap:wrap;justify-content:space-between;list-style:none;padding:0;" data-reactid="15"><li data-reactid="16"><a rel="prev" href="/blog/hello-world/" data-reactid="17"><!-- react-text: 18 -->← <!-- /react-text --><!-- react-text: 19 -->Hello, World!<!-- /react-text --></a></li><li data-reactid="20"></li></ul></div></div></div><script id="webpack-manifest">/*<![CDATA[*/window.webpackManifest={"231608221292675":"app-89ec82acb26e56cdceae.js","99219681209289":"component---node-modules-gatsby-plugin-offline-app-shell-js-5c4c5a0f7af9dc69d6d7.js","107818501498521":"component---src-templates-blog-post-js-b5295703302413fc88b5.js","162898551421021":"component---src-pages-404-js-6e957444da3f2d5abd7e.js","35783957827783":"component---src-pages-index-js-1698635823e3733e5ac4.js","60335399758886":"path----c77e87c67812b0de4864.js","210333531512890":"path---offline-plugin-app-shell-fallback-a0e39f21c11f6a62c5ab.js","56542547228532":"path---blog-how-move-model-between-two-django-apps-bfae30cea0d485a52c69.js","139410006208159":"path---blog-hello-world-ef8ddda0ea16665f3f8c.js","254022195166212":"path---404-a0e39f21c11f6a62c5ab.js","142629428675168":"path---index-d792731172e2fc235611.js","178698757827068":"path---404-html-a0e39f21c11f6a62c5ab.js","114276838955818":"component---src-layouts-index-js-7d201df270037ab05310.js"}/*]]>*/</script><script>/*<![CDATA[*/!function(e,t,r){function n(){for(;d[0]&&"loaded"==d[0][f];)c=d.shift(),c[o]=!i.parentNode.insertBefore(c,i)}for(var s,a,c,d=[],i=e.scripts[0],o="onreadystatechange",f="readyState";s=r.shift();)a=e.createElement(t),"async"in i?(a.async=!1,e.head.appendChild(a)):i[f]?(d.push(a),a[o]=n):e.write("<"+t+' src="'+s+'" defer></'+t+">"),a.src=s}(document,"script",["/commons-6e82eaae3f56c620a9ec.js","/app-89ec82acb26e56cdceae.js","/path---blog-how-move-model-between-two-django-apps-bfae30cea0d485a52c69.js","/component---src-templates-blog-post-js-b5295703302413fc88b5.js","/component---src-layouts-index-js-7d201df270037ab05310.js"])/*]]>*/</script></body></html>
