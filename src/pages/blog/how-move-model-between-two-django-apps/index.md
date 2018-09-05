@@ -8,7 +8,7 @@ shareImage: "./../../../media/images/django-logo-negative.png"
 
 ### Warning
 
-Do not perform any operations on a production database, test everyting on a dump first.
+Do not perform any operations on a production database, test everyting locally first.
 
 ### The wrong way
 
