@@ -8,6 +8,8 @@ import { rhythm, scale } from '../utils/typography'
 class Template extends React.Component {
   render() {
     const { location, children, data } = this.props
+    const absaluteURL = this.props.data.site.siteMetadata.siteUrl + location.pathname
+
     let header
 
     let rootPath = `/`
@@ -81,7 +83,7 @@ class Template extends React.Component {
           <meta property="fb:app_id" content={data.site.siteMetadata.socialMedia.fbAppId} />
           <meta property="og:title" content={data.site.siteMetadata.title} />
           <meta property="og:description" content={data.site.siteMetadata.description} />
-          <meta property="og:url" content={location.pathname} />
+          <meta property="og:url" content={absaluteURL} />
           <meta property="og:type" content="website" />
 
           <meta name="description" content={data.site.siteMetadata.description} />
@@ -103,6 +105,7 @@ export const query = graphql`
         title
         author
         description
+        siteUrl
         socialMedia {
           fbAppId
           twitter
