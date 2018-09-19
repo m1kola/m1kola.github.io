@@ -134,7 +134,7 @@ This step isn't necessary, if you specified the [Meta.db_table](https://docs.dj
 
 In my case I have a table with a name **app1_modelthatshouldbemoved**. I want to rename the **ModelThatShouldBeMoved** model to **ModelThatWasMoved** and put it into the **app2**, so I need the name to be **app2_modelthatwasmoved** to match Django's naming convention.
 
-Here is the migration for my case (**0002_rename_table.py** in the **app1** app):
+Here is the migration for my case (**0002\_rename\_table.py** in the **app1** app):
 
 ```python
 from django.db import migrations
@@ -157,7 +157,7 @@ class Migration(migrations.Migration):
 
 Now I need to add a migration that creates a model in the state for **app2** and updates content types in the database.
 
-I've called my migration **0001_move_a_model_and_rename.py**, because it's the first migration in my **app2**. In your case it may be a migration with a different number. Also you will probably need to specify the previous migration in your app as a dependency.
+I've called my migration **0001\_move\_a\_model\_and\_rename.py**, because it's the first migration in my **app2**. In your case it may be a migration with a different number. Also you will probably need to specify the previous migration in your app as a dependency.
 
 ```python
 from __future__ import unicode_literals
@@ -233,13 +233,13 @@ Note that the **CreateModel** operation should reflect your model definition. 
 
 As an alternative to the **CreateModel** operation, you can copy and paste all the operations related to your model since the first migration (usually **0001_initial**) in your application.
 
-Note also that if you do not need to rename your model, you need to remove the **RenameModel** operation and remove the **model** argument from the **update** calls in the **update_contentypes** and **update_contentypes_reverse** functions.
+Note also that if you do not need to rename your model, you need to remove the **RenameModel** operation and remove the **model** argument from the **update** calls in the **update_contentypes** and **update\_contentypes\_reverse** functions.
 
 #### Step 3
 
 I need to create migrations for **all the apps that have models which have relations with the model that I want to move**.
 
-In my example, I have only one app that contains only one field which refers the old **ModelThatShouldBeMoved** model. My migration (**0003_update_relations.py** in **app1**):
+In my example, I have only one app that contains only one field which refers the old **ModelThatShouldBeMoved** model. My migration (**0003\_update\_relations.py** in **app1**):
 
 ```python
 from django.db import migrations, models
@@ -286,7 +286,7 @@ models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='rel
 
 #### Step 4
 
-The last migration simply removes the model from the state of **app1** (**0004_delete_old_model_from_the_state.py**):
+The last migration simply removes the model from the state of **app1** (**0004\_delete\_old\_model\_from\_the\_state.py**):
 
 ```python
 from __future__ import unicode_literals
@@ -403,4 +403,4 @@ django_migration_test=# select * from django_content_type where app_label in ('a
 
 **Expected result:**
 
-Data should be the same as before except the **django_content_type** table. This table should contain a new **app_label** and a new **model** name, but the same id (see the entry with **id=8**) for the model that has been moved.
+Data should be the same as before except the **django\_content\_type** table. This table should contain a new **app_label** and a new **model** name, but the same id (see the entry with **id=8**) for the model that has been moved.
